@@ -1,0 +1,74 @@
+@extends('layout.layout')
+@section('content')
+{{-- <section class="bg-gradient-primary"> --}}
+    <div class="container">
+        @if (Session::has('message'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ Session::get('message') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
+        @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+        <div class="card o-hidden border-0 shadow-lg my-5">
+            <div class="card-body p-0">
+                <!-- Nested Row within Card Body -->
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-block bg-register-image">
+                        <img src="{{ url('assets/img/law-balance-symbol-justice-scales-icon-vector-2755013.jpg') }}" alt="img">
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">Add a new Client</h1>
+                            </div>
+                            <form class="user" action="{{ url('clients/addClient') }}" method="POST">@csrf
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input name="firstName" type="text" class="form-control form-control-user" id="exampleFirstName"
+                                        placeholder="First Name">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input name="lastName" type="text" class="form-control form-control-user" id="exampleLastName"
+                                        placeholder="Last Name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input name="address" type="text" class="form-control form-control-user" id="exampleInputEmail"
+                                    placeholder="Address">
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input name="phoneNumber" type="tel" class="form-control form-control-user"
+                                        id="exampleInputPassword" placeholder="Phone Number">
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input name="email" type="email" class="form-control form-control-user"
+                                        id="exampleRepeatPassword" placeholder="Email">
+                                    </div>
+                                </div>
+
+                                <input type="submit" name="supplier_but" value="Add Client" class="btn btn-primary btn-user btn-block">
+                                {{-- <a href="{{ url('admin/viewCustomer') }}" class="btn btn-cancel">View Customer</a>
+                                <a href="{{ url('admin/viewCustomer') }}" class="btn btn-primary btn-user btn-block">
+                                        Add Client
+                                </a> --}}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+{{-- </section> --}}
+@endsection
