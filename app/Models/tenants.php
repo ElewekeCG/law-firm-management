@@ -18,4 +18,9 @@ class tenants extends Model
         'rentAmt',
         'propertyId',
     ];
+
+    public function property()
+    {
+        return $this->belongsTo(properties::class, 'propertyId');
+    }
 }

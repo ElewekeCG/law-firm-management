@@ -16,7 +16,7 @@
             </div>
         @endif
         <div class="card-header py-3">
-            <h3 class="m-0 font-weight-bold text-primary">Cases</h3>
+            <h3 class="m-0 font-weight-bold text-primary">Properties</h3>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -42,7 +42,7 @@
                         </div>
                         <div class="col-sm-12 col-md-6">
                             <div id="dataTable_filter" class="dataTables_filter">
-                                <form action="{{ route('cases.allCases') }}" method="GET" class=" mb-4">
+                                <form action="{{ route('properties.view') }}" method="GET" class=" mb-4">
                                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="form-control mr-2">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </form>
@@ -51,50 +51,38 @@
                     </div>
 
                     <!-- Keeps query parameters in pagination links -->
-                    {{ $caseList->appends(request()->input())->links() }}
+                    {{ $propertyList->appends(request()->input())->links() }}
 
 
-                    @if (!$caseList->isEmpty())
+                    @if (!$propertyList->isEmpty())
                         <div class="row">
                             <div class="col-sm-12">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Title</th>
-                                            <th>Type</th>
-                                            <th>Status</th>
-                                            <th>Client</th>
-                                            <th>Suit Number</th>
-                                            <th>StartDate</th>
-                                            <th>Adjourned Date</th>
-                                            <th>Court</th>
+                                            <th>Landlord</th>
+                                            <th>Address</th>
+                                            <th>Rate</th>
+                                            <th>Percentage</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>Title</th>
-                                            <th>Type</th>
-                                            <th>Status</th>
-                                            <th>Client</th>
-                                            <th>Suit Number</th>
-                                            <th>StartDate</th>
-                                            <th>Adjourned Date</th>
-                                            <th>Court</th>
+                                            <th>Landlord</th>
+                                            <th>Address</th>
+                                            <th>Rate</th>
+                                            <th>Percentage</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        @foreach ($caseList as $case)
+                                        @foreach ($propertyList as $props)
                                             <tr>
-                                                <td>{{ $case->title }}</td>
-                                                <td>{{ $case->type }}</td>
-                                                <td>{{ $case->status }}</td>
-                                                <td>{{ $case->client->full_name }}</td>
-                                                <td>{{ $case->suitNumber }}</td>
-                                                <td>{{ $case->startDate }}</td>
-                                                <td>{{ $case->nextAdjournedDate }}</td>
-                                                <td>{{ $case->assignedCourt }}</td>
+                                                <td>{{ $props->client->full_name }}</td>
+                                                <td>{{ $props->address }}</td>
+                                                <td>{{ $props->rate }}</td>
+                                                <td>{{ $props->percentage }}</td>
                                                 <td>
-                                                    <a class="me-3" href="{{ url('cases/edit/' . $case->id) }}">
+                                                    <a class="me-3" href="{{ url('properties/edit/' . $props->id) }}">
                                                         <img src="{{ url('assets/img/edit.svg') }}" alt="Edit">
                                                     </a>
                                                 </td>
@@ -108,13 +96,13 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-5">
                             <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">
-                                Showing {{ $caseList->firstItem() }} to {{ $caseList->lastItem() }} of
-                                {{ $caseList->total() }} entries
+                                Showing {{ $propertyList->firstItem() }} to {{ $propertyList->lastItem() }} of
+                                {{ $propertyList->total() }} entries
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-7">
                             <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
-                                {{ $caseList->links() }} <!-- Generates pagination links automatically -->
+                                {{ $propertyList->links() }} <!-- Generates pagination links automatically -->
                             </div>
                         </div>
                     </div>

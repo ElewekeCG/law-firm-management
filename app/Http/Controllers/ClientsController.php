@@ -18,7 +18,7 @@ class ClientsController extends Controller
         $clientList = clients::where('firstName', 'like', '%' . $searchTerm . '%')
         ->paginate($perPage);
 
-        return view('clients.clientList', compact('clientList'));
+        return view('clients.clientList', compact( 'clientList'));
     }
 
     public function showAddClient()
@@ -44,8 +44,8 @@ class ClientsController extends Controller
                 'firstName' => 'required|string|max:50',
                 'lastName' => 'required|string|max:50',
                 'address' => 'required|string|max:100',
-                'phoneNumber' => 'required|string|max:15|unique:clients,phoneNumber',
-                'email' => 'required|email|max:50|unique:clients,email' ,
+                'phoneNumber' => 'required|string|max:15',
+                'email' => 'required|email|max:50' ,
                 'propertyManaged' => 'required|boolean',
             ]);
 

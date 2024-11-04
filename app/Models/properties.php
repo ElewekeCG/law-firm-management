@@ -15,4 +15,9 @@ class properties extends Model
         'rate',
         'percentage',
     ];
+
+    public function client()
+    {
+        return $this->belongsTo(clients::class, 'clientId');
+    }
 }

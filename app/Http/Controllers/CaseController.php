@@ -29,9 +29,14 @@ class CaseController extends Controller
         return view('cases.addCase', compact('clients'));
     }
 
-    public function showEditCase()
+    public function showEditCase($id)
     {
-        return view('cases.editCase');
+        $case = cases::find($id);
+        $clients = clients::all();
+        return view('cases.editCase', [
+            'case' => $case,
+            'clients' => $clients
+        ]);
     }
 
     public function updateCase(Request $request, $id)
@@ -45,7 +50,7 @@ class CaseController extends Controller
                 'type' => 'required|string|max:20',
                 'status' => 'required|string|max:20',
                 'clientId' => 'required|exists:clients,id',
-                'suitNumber' => 'required|string|max:20|unique:cases,suitNumber',
+                'suitNumber' => 'required|string|max:20',
                 'startDate' => 'required|date',
                 'nextAdjournedDate' => 'required|date:d/m/Y g:i A | after:now',
                 'assignedCourt' => 'required|string|max:50',

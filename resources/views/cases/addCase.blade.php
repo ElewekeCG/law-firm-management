@@ -118,38 +118,3 @@
         });
     </script>
 @endsection
-
-{{-- @section('scripts')
-    <script>
-        $(document).ready(function() {
-            $('.select2').select2({
-                placeholder: "Select a client",
-                allowClear: true,
-                ajax: {
-                    url: "{{ route('cases.getClients') }}",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            search: params.term,
-                            // page: params.page
-                        };
-                    },
-
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data, function(item) {
-                                return {
-                                    id: item.id
-                                    text: item.full_name,
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                },
-                minimumInputLength: 1
-            });
-        });
-    </script>
-@endsection --}}

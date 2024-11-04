@@ -13,4 +13,9 @@ class proceedings extends Model
         'caseId',
         'description',
     ];
+
+    public function case()
+    {
+        return $this->belongsTo(cases::class, 'caseId');
+    }
 }

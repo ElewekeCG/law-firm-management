@@ -22,7 +22,7 @@
         </div>
         @endif
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+            <h3 class="m-0 font-weight-bold text-primary">Clients</h3>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -43,10 +43,10 @@
                         </div>
                         <div class="col-sm-12 col-md-6">
                             <div id="dataTable_filter" class="dataTables_filter">
-                                <label>
-                                    Search:
-                                    <input type="search" id="dataTableSearch" name="search" class="form-control form-control-sm" value="{{ request('search') }}" placeholder="Search..." aria-controls="dataTable">
-                                </label>
+                                <form action="{{ route('clients.clientList') }}" method="GET" class="mb-4">
+                                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="form-control mr-2">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -54,29 +54,6 @@
                     <!-- Keeps query parameters in pagination links -->
                     {{ $clientList->appends(request()->input())->links() }}
 
-                    {{-- <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <div class="dataTables_length" id="dataTable_length">
-                                <label>Show
-                                    <select name="dataTable_length" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                    </select>
-                                    entries
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div id="dataTable_filter" class="dataTables_filter">
-                                <label>
-                                    Search:
-                                    <input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable">
-                                </label>
-                            </div>
-                        </div>
-                    </div> --}}
                     @if(!$clientList->isEmpty())
                     <div class="row">
                         <div class="col-sm-12">
@@ -107,6 +84,11 @@
                                         <td>{{ $client->phoneNumber }}</td>
                                         <td>{{ $client->email }}</td>
                                         <td>{{ $client->propertyManaged ? 'Yes' : 'No' }}</td>
+                                        <td>
+                                            <a class="me-3" href="{{ url('clients/edit/' . $client->id) }}">
+                                                <img src="{{ url('assets/img/edit.svg') }}" alt="Edit">
+                                            </a>
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

@@ -17,6 +17,9 @@
     {{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
+    {{-- fontawesome icons --}}
+    <script src="https://kit.fontawesome.com/0963bbf854.js" crossorigin="anonymous"></script>
+    
     <!-- Custom fonts for this template-->
     <link href="{{ url('/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link
@@ -49,6 +52,7 @@
     <script src="{{ url('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
     <!-- Custom scripts for all pages-->
+
     <script src="{{ url('assets/js/sb-admin-2.min.js') }}"></script>
 
     <!-- Page level plugins -->

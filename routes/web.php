@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\CaseController;
-use App\Http\Controllers\ClientsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,16 +21,30 @@ Route::group(['prefix' => 'clients'], function () {
     Route::get('/view', 'ClientsController@showClientsList')->name('clients.clientList');
     Route::get('/add', 'ClientsController@showAddClient')->name('clients.addClient');
     Route::post('/addClient', 'ClientsController@addClient');
-    Route::get('/edit', 'ClientsController@showEditClient')->name('clients.editClient');
-    Route::put('/update', 'ClientsController@updateClient');
+    Route::get('/edit/{id}', 'ClientsController@showEditClient')->name('clients.editClient');
+    Route::put('/update/{id}', 'ClientsController@updateClient');
 });
 
 Route::group(['prefix' => 'cases'], function () {
     Route::get('/view', 'CaseController@index')->name('cases.allCases');
     Route::get('/add', 'CaseController@showAddCase')->name('cases.addCase');
     Route::post('/addCase', 'CaseController@addCase');
-    Route::get('/edit', 'CaseController@showEditCase')->name('cases.editcase');
-    Route::put('/update', 'CaseController@updateCase');
-    Route::get('/getClients', 'CaseController@getClients')->name('cases.getClients');
+    Route::get('/edit/{id}', 'CaseController@showEditCase')->name('cases.edit');
+    Route::put('/update/{id}', 'CaseController@updateCase');
+
+    // Record of Proceedings
+    Route::get('/addRecord', 'ProceedingsController@showAdd')->name('cases.addRecord');
+    Route::get('/editRecord/{id}', 'ProceedingsController@showEdit')->name('cases.editRecord');
+    Route::post('/saveRecord', 'ProceedingsController@addPro');
+    Route::put('/updateRecord/{id}', 'ProceedingsController@updatePro');
 });
+
+Route::group(['prefix' => 'properties'], function () {
+    Route::get('/view', 'PropertiesController@index')->name('properties.view');
+    Route::get('/add', 'PropertiesController@showAddProperty')->name('properties.add');
+    Route::post('/addProp', 'PropertiesController@addProp');
+    Route::get('/edit/{id}', 'PropertiesController@showEditProperty')->name('properties.edit');
+    Route::put('/update/{id}', 'PropertiesController@updateProp');
+});
+
 require __DIR__ . '/auth.php';

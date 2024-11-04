@@ -8,6 +8,7 @@
             </div>
         @endif
 
+        {{-- validation errors --}}
         @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <ul>
@@ -18,45 +19,35 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
+
         <div class="card card-body">
             <div class="card-body">
-                <h5 class="py-2">Update Client</h5>
+                <h5 class="py-2">Edit Property</h5>
             </div>
             <div class="card-body">
-                @if ($client)
-                    <form id="merchant-customer-form" action="{{ url('clients/update/' .$client->id) }}" method="POST">
+                @if ($prop)
+                    <form id="merchant-customer-form" action="{{ url('properties/update/' . $prop->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="firstName">First Name<sup class="text-danger">*</sup></label>
-                                    <input name="firstName" type="text" class="form-control" placeholder="E.g John"
-                                        id="customer_first_name" value="{{ old('firstName', $client->firstName) }}">
+                                    <label>Landlord</label>
+                                    <select name="clientId" class="form-control select2" id="clientSelect">
+                                        <option value="-1">Select Landlord</option>
+                                        @foreach ($clients as $client)
+                                            <option value="{{ $client->id }}" {{ $prop->clientId == $client->id ? 'selected' : '' }}>
+                                                {{ $client->full_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="lastName">Last Name<sup class="text-danger">*</sup></label>
-                                    <input name="lastName" type="text" class="form-control" placeholder="E.g Doe" id="customer_last_name"
-                                        required="" value="{{ old('lastName', $client->lastName) }}">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="address">Address<sup class="text-danger">*</sup></label>
-                                    <input name="address" type="text" class="form-control" placeholder="" id="customer_email"
-                                        required="" value="{{ old('address', $client->address) }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="phoneNumber">Phone Number<sup class="text-danger">*</sup></label>
-                                    <input name="phoneNumber" type="text" class="form-control" placeholder="" id="customer_phone"
-                                        value="{{ old('phoneNumber', $client->phoneNumber) }}">
+                                    <input name="address" type="text" class="form-control" placeholder="E.g Criminal"
+                                        id="customer_last_name" required="" value="{{ old('address', $prop->address) }}">
                                 </div>
                             </div>
                         </div>
@@ -64,18 +55,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="email">Email Address<sup class="text-danger">*</sup></label>
-                                    <input name="email" type="email" class="form-control" placeholder="example@domain.com"
-                                        id="customer_email" value="{{ old('email', $client->email) }}">
+                                    <label for="rate">Rate<sup class="text-danger">*</sup></label>
+                                    <input name="rate" type="number" class="form-control" id="customer_email" required="" value="{{ old('rate', $prop->rate) }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="propertyManaged">Property Managed?</label>
-                                    <select name="propertyManaged" class="form-control">
-                                        <option value="1">Yes</option>
-                                        <option value="0" selected>No</option>
-                                    </select>
+                                    <label for="percentage">Percentage<sup class="text-danger">*</sup></label>
+                                    <input name="percentage" type="number" class="form-control" id="customer_email" required="" value="{{ old('percentage', $prop->percentage) }}">
                                 </div>
                             </div>
                         </div>
@@ -96,4 +83,16 @@
         </div>
     </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#clientSelect').select2({
+                placeholder: 'Select Client',
+                allowClear: true,
+                minimumInputLength: 1 // Start searching after 1 character
+            });
+        });
+    </script>
 @endsection
