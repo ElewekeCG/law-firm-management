@@ -13,16 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('proceedings', function (Blueprint $table) {
+        Schema::create('appointments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('caseId');
-            $table->foreign('caseId')
+            $table->unsignedBigInteger('clientId');
+            $table->foreign('clientId')
                   ->references('id')
-                  ->on('cases')
+                  ->on('clients')
                   ->onDelete('cascade');
-            $table->text('description');
-            $table->string('requiredDoc');
-            $table->date('dueDate');
+            $table->date('appointmentDate');
+            $table->integer('fees');
+            $table->integer('amountPaid');
+            $table->integer('balance');
+            $table->text('instructions');
             $table->timestamps();
         });
     }
@@ -34,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('proceedings');
+        Schema::dropIfExists('appointments');
     }
 };

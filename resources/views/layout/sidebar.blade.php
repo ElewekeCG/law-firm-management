@@ -32,13 +32,13 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-            aria-expanded="true" aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClients"
+            aria-expanded="true" aria-controls="collapseClients">
             <i class="fa-solid fa-users"></i>
             {{-- <i class="fas fa-fw fa-cog"></i> --}}
             <span>Clients</span>
         </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseClients" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Clients</h6>
                 <a class="collapse-item" href="{{ url('clients/view') }}">View Clients</a>
@@ -49,13 +49,13 @@
 
     <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-            aria-expanded="true" aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCases"
+            aria-expanded="true" aria-controls="collapseCases">
             <i class="fa-solid fa-file"></i>
             {{-- <i class="fas fa-fw fa-wrench"></i> --}}
             <span>Cases</span>
         </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+        <div id="collapseCases" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Cases</h6>
                 <a class="collapse-item" href="{{ url('cases/view') }}">View Cases</a>
@@ -76,31 +76,46 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-            aria-expanded="true" aria-controls="collapsePages">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProps"
+            aria-expanded="true" aria-controls="collapseProps">
             <i class="fa-solid fa-building"></i>
             {{-- <i class="fas fa-fw fa-folder"></i> --}}
             <span>Properties</span>
         </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div id="collapseProps" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 {{-- <h6 class="collapse-header">Login Screens:</h6> --}}
                 <a class="collapse-item" href="{{ url('properties/view') }}">View Properties</a>
                 <a class="collapse-item" href="{{ url('properties/add') }}">Add a new Property</a>
-                <a class="collapse-item" href="login.html">View Tenants</a>
-                <a class="collapse-item" href="register.html">Add a new Tenant</a>
             </div>
         </div>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-            aria-expanded="true" aria-controls="collapsePages">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTenants"
+            aria-expanded="true" aria-controls="collapseTenants">
+            <i class="fa-solid fa-users"></i>
+            {{-- <i class="fas fa-fw fa-wrench"></i> --}}
+            <span>Tenants</span>
+        </a>
+        <div id="collapseTenants" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Manage Tenants</h6>
+                <a class="collapse-item" href="{{ url('tenants/view') }}">View Tenants</a>
+                <a class="collapse-item" href="{{ url('tenants/add') }}">Add a new Tenant</a>
+                {{-- <a class="collapse-item" href="utilities-other.html">Add Record of Proceedings</a> --}}
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTrans"
+            aria-expanded="true" aria-controls="collapseTrans">
             <i class="fa-solid fa-coins"></i>
             {{-- <i class="fas fa-fw fa-folder"></i> --}}
             <span>Transactions</span>
         </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div id="collapseTrans" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <div class="collapse-divider"></div>
                 <h6 class="collapse-header">Transactions</h6>

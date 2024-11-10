@@ -32,14 +32,18 @@ class ProceedingsController extends Controller
 
         if ($request->isMethod('put')) {
             $validatedData = $request->validate([
-                'caseId' => 'required',
+                'caseId' => 'required|exists:cases,id',
                 'description' => 'required|string',
+                'requiredDoc' => 'string',
+                'dueDate' => 'date'
             ]);
 
-            // update therequired field
+            // update the required field
             $pro->update([
                 'caseId' => $validatedData['caseId'],
                 'description' => $validatedData['description'],
+                'requiredDoc' => $validatedData['requiredDoc'],
+                'dueDate' => $validatedData['dueDate'],
             ]);
 
             // Redirect to the view cases page
@@ -54,11 +58,15 @@ class ProceedingsController extends Controller
             $validatedData = $request->validate([
                 'caseId' => 'required',
                 'description' => 'required|string',
+                'requiredDoc' => 'string',
+                'dueDate' => 'date'
             ]);
 
             $pro = cases::create([
                 'caseId' => $validatedData['caseId'],
                 'description' => $validatedData['description'],
+                'requiredDoc' => $validatedData['requiredDoc'],
+                'dueDate' => $validatedData['dueDate'],
             ]);
 
             return redirect()->back()->with('message', 'Record added successfully');

@@ -18,13 +18,13 @@ return new class extends Migration
             $table->string('firstName');
             $table->string('lastName');
             $table->string('email')->unique();
-            $table->string('paymentType');
+            $table->enum('paymentType', ['yearly', 'monthly'])->default('yearly');
             $table->string('accomType');
             $table->integer('rentAmt');
             $table->unsignedBigInteger('propertyId');
             $table->foreign('propertyId')
                   ->references('id')
-                  ->on('proprties')
+                  ->on('properties')
                   ->onDelete('cascade');
             $table->timestamps();
         });

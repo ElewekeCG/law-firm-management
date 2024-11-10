@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\cases;
 use App\Models\clients;
-use Illuminate\Contracts\Support\ValidatedData;
 use Illuminate\Http\Request;
 
 class CaseController extends Controller
@@ -108,28 +107,4 @@ class CaseController extends Controller
             return redirect()->back()->with('message', 'Case added successfully');
         }
     }
-
-    // public function getClients(Request $request)
-    // {
-    //     $search = $request->input('search');
-
-    //     $clientList = clients::select('id', 'firstName', 'lastName')
-    //         ->when($search, function ($query) use ($search) {
-    //             return $query->where(function ($q) use ($search) {
-    //                 $q->where('firstName', 'LIKE', "%{$search}%")
-    //                     ->orWhere('lastName', 'LIKE', "%{$search}%");
-    //             });
-    //         })
-    //         ->get()
-    //         ->map(function ($clientList) {
-    //             return [
-    //                 'id' => $clientList->id,
-    //                 'full_name' => $clientList->full_name
-    //             ];
-    //         });
-
-    //     return response()->json($clientList);
-    // }
-
-
 }

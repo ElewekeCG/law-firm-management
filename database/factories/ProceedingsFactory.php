@@ -20,6 +20,8 @@ class ProceedingsFactory extends Factory
         return [
             'clientId' => cases::factory(),
             'description' => fake()->sentence(),
+            'requiredDoc' => fake()->sentence(),
+            'dueDate' => fake()->sentence()
         ];
     }
 }

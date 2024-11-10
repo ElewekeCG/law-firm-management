@@ -12,6 +12,8 @@ class proceedings extends Model
     protected $fillable = [
         'caseId',
         'description',
+        'requiredDoc',
+        'dueDate',
     ];
 
     public function case()

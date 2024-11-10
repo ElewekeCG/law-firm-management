@@ -23,4 +23,15 @@ class tenants extends Model
     {
         return $this->belongsTo(properties::class, 'propertyId');
     }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->firstName} {$this->lastName}";
+    }
+
+    // adding the polymorphic relationship
+    public function transactions()
+    {
+        return $this->morphMany(transactions::class, 'entity');
+    }
 }

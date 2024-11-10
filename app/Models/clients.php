@@ -58,4 +58,10 @@ class clients extends Model
     {
         return $query->where('propertyManaged', false);
     }
+
+    // adding polymorphic relationship
+    public function transactions()
+    {
+        return $this->morphMany(transactions::class, 'entity');
+    }
 }
