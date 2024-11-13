@@ -119,8 +119,8 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <div class="collapse-divider"></div>
                 <h6 class="collapse-header">Transactions</h6>
-                <a class="collapse-item" href="404.html">Incoming Transactions</a>
-                <a class="collapse-item" href="blank.html">Expenses</a>
+                <a class="collapse-item" href="{{ url('transactions/add') }}">Add Transaction</a>
+                <a class="collapse-item" href="{{ url('transactions/view') }}">Manage Transactions</a>
                 {{-- <a class="collapse-item" href="">Expenses</a> --}}
             </div>
         </div>

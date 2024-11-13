@@ -28,10 +28,5 @@ class tenants extends Model
     {
         return "{$this->firstName} {$this->lastName}";
     }
-
-    // adding the polymorphic relationship
-    public function transactions()
-    {
-        return $this->morphMany(transactions::class, 'entity');
-    }
+    
 }

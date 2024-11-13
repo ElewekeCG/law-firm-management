@@ -19,16 +19,13 @@ class TransactionsFactory extends Factory
      */
     public function definition()
     {
-        // Randomly decide whether the transaction is linked to a Tenant or a Client
-        $entityType = $this->faker->randomElement([tenants::class, clients::class]);
-        $entity = $entityType::factory()->create(); // Creates a Tenant or Client instance
         return [
             'amount' => $this->faker->numberBetween(10, 100000), // Random amount between 100 and 10,000
             'paymentDate' => $this->faker->date(),
-            'entity_type' => $entityType, // Class name of the related entity
-            'entity_id' => $entity->id, // ID of the related entity
             'type' => $this->faker->randomElement(['credit', 'debit']), // Either credit or debit
-            'subtype' => $this->faker->randomElement(['Salary', 'Bonus', 'Refund', null]), // Subtype only for credit
+            'subtype' => $this->faker->randomElement(['legalFee', 'rent']), // Subtype only for credit
+            'tenantId'=>tenants::factory(),
+            'clientId'=>clients::factory(),
             'propertyId'=>properties::factory(),
             'narration' => $this->faker->sentence(), // Random text for narration
         ];

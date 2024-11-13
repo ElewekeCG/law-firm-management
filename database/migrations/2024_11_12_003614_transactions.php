@@ -17,17 +17,18 @@ return new class extends Migration
             $table->id();
             $table->integer('amount');
             $table->date('paymentDate');
-            $table->string('entityType');
-            $table->unsignedBigInteger('entityId');
             $table->enum('type', ['credit', 'debit'])->default('credit');
             $table->enum('subType', ['legalFee', 'rent'],)->nullable(); //only for credit transactions
-            $table->text('narration');
+            $table->unsignedBigInteger('tenantId')->nullable();
+            $table->unsignedBigInteger('clientId')->nullable();
             $table->unsignedBigInteger('propertyId')->nullable();
+            $table->text('narration');
             $table->timestamps();
+
+            $table->foreign('tenantId')->references('id')->on('tenants')->onDelete('cascade');
+            $table->foreign('clientId')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('propertyId')->references('id')->on('properties')->onDelete('cascade');
 
-            // add index for polymorphic fields
-            $table->index(['entityId', 'entityType']);
         });
     }
 

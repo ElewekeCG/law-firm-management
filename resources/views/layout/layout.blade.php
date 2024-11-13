@@ -19,7 +19,7 @@
 
     {{-- fontawesome icons --}}
     <script src="https://kit.fontawesome.com/0963bbf854.js" crossorigin="anonymous"></script>
-    
+
     <!-- Custom fonts for this template-->
     <link href="{{ url('/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link
@@ -38,6 +38,7 @@
                 {{-- <div class="container-fluid"> --}}
                 @include('layout.header')
                 @yield('content')
+                @yield('scripts')
                 {{-- </div> --}}
             </div>
         </div>

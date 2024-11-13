@@ -19,8 +19,23 @@ class Trans extends Controller
         $searchTerm = $request->input('search', '');
 
         // filter by search term if provided
-        $transList = transactions::where('propertyId', 'like', '%' . $searchTerm . '%')
-            ->paginate($perPage);
+        $transList = transactions::query()
+        ->with(['tenant', 'client', 'property']) // Eager load relationships
+        ->when($searchTerm, function ($query, $searchTerm) {
+            $query->orWhereHas('tenant', function ($q) use ($searchTerm) {
+                    $q->where('firstName', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('lastName', 'like', '%' . $searchTerm . '%');
+                })
+                ->orWhereHas('client', function ($q) use ($searchTerm) {
+                    $q->where('firstName', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('lastName', 'like', '%' . $searchTerm . '%');
+                })
+                ->orWhereHas('property', function ($q) use ($searchTerm) {
+                    $q->where('address', 'like', '%' . $searchTerm . '%');
+                })
+                ->orWhere('paymentDate', $searchTerm);
+        })
+        ->paginate($perPage);
 
         return view('transactions.index', compact('transList'));
     }
@@ -42,7 +57,8 @@ class Trans extends Controller
         return view('transactions.edit', [
             'properties' => $properties,
             'clients' => $clients,
-            'tenants'=> $tenants
+            'tenants' => $tenants,
+            'trans' => $trans,
         ]);
     }
 
@@ -52,33 +68,31 @@ class Trans extends Controller
         $trans = transactions::findOrFail($id);
 
         if ($request->isMethod('put')) {
-            $validatedData = $request->validate([
-                'amount' => 'required|integer|min:0',
+            $rules = [
+                'amount' => 'required|integer|min:1',
                 'paymentDate' => 'required|date',
-                'entityType' => 'required|in:App\Models\tenants,App\Models\clients',
-                'entityId' => 'required|integer|exists:'.$request->input('entity_type').',id',
                 'type' => 'required|in:credit,debit',
-                'subType' => 'nullable|string|required_if:type,credit|in:legalFee,rent',
-                'propertyId' => [
-                    'nullable',
-                    'required_if:type,debit',
-                    'required_if:subtype,rent',
-                    'exists:properties,id'
-                ],
-                'narration' => 'required|exists:clients,id',
-            ]);
+                'subType' => 'nullable|required_if:type,credit|in:legalFee,rent',
+                'narration' => 'required|string|max:1024',
+            ];
 
-            // update the required field
-            $trans->update([
-                'amount' => $validatedData['amount'],
-                'paymentDate' => $validatedData['paymentDate'],
-                'entityType' => $validatedData['entityType'],
-                'entityId' => $validatedData['entityId'],
-                'type' => $validatedData['type'],
-                'subType' => $validatedData['subType'],
-                'propertyId' => $validatedData['propertyId'],
-                'narration' => $validatedData['narration'],
-            ]);
+            if($request->input('subType') === 'rent') {
+                $rules['tenantId'] = 'required|exists:tenants,id';
+                $rules['propertyId'] = 'required|exists:properties,id';
+            } elseif ($request->input('subType') === 'legalFee') {
+                $rules['clientId'] = 'required|exists:clients,id';
+            } elseif ($request->input('type' === 'debit')) {
+                $rules['propertyId'] = 'required|exists:properties,id';
+            }
+
+            $validatedData = $request->validate($rules);
+
+            // remove null values before creating record
+            $data = array_filter($validatedData, function($value) {
+                return !is_null($value);
+            });
+
+            $trans->update($data);
 
             // Redirect to the view transactions page
             return redirect()->route('transactions.index')
@@ -88,33 +102,32 @@ class Trans extends Controller
 
     public function addTrans(Request $request)
     {
-        if ($request->isMethod('post')) {
-            $validatedData = $request->validate([
-                'amount' => 'required|integer|min:0',
+        if($request->isMethod('post')) {
+            $rules = [
+                'amount' => 'required|integer|min:1',
                 'paymentDate' => 'required|date',
-                'entityType' => 'required|in:App\Models\tenants,App\Models\clients',
-                'entityId' => 'required|integer|exists:'.$request->input('entity_type').',id',
                 'type' => 'required|in:credit,debit',
-                'subType' => 'nullable|string|required_if:type,credit|in:legalFee,rent',
-                'propertyId' => [
-                    'nullable',
-                    'required_if:type,debit',
-                    'required_if:subtype,rent',
-                    'exists:properties,id'
-                ],
-                'narration' => 'required|exists:clients,id',
-            ]);
+                'subType' => 'nullable|required_if:type,credit|in:legalFee,rent',
+                'narration' => 'required|string|max:1024',
+            ];
 
-            $newProp = properties::create([
-                'amount' => $validatedData['amount'],
-                'paymentDate' => $validatedData['paymentDate'],
-                'entityType' => $validatedData['entityType'],
-                'entityId' => $validatedData['entityId'],
-                'type' => $validatedData['type'],
-                'subType' => $validatedData['subType'],
-                'propertyId' => $validatedData['propertyId'],
-                'narration' => $validatedData['narration'],
-            ]);
+            if($request->input('subType') === 'rent') {
+                $rules['tenantId'] = 'required|exists:tenants,id';
+                $rules['propertyId'] = 'required|exists:properties,id';
+            } elseif ($request->input('subType') === 'legalFee') {
+                $rules['clientId'] = 'required|exists:clients,id';
+            } elseif ($request->input('type' === 'debit')) {
+                $rules['propertyId'] = 'required|exists:properties,id';
+            }
+
+            $validatedData = $request->validate($rules);
+
+            // remove null values before creating record
+            $data = array_filter($validatedData, function($value) {
+                return !is_null($value);
+            });
+
+            transactions::create($data);
 
             return redirect()->back()->with('message', 'Transaction added successfully');
         }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\clients;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\appointments>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\appointmentsModel>
  */
 class AppointmentsFactory extends Factory
 {

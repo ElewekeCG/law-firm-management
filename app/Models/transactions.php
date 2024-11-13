@@ -12,18 +12,22 @@ class transactions extends Model
     protected $fillable = [
         'amount',
         'paymentDate',
-        'entityType',
-        'entityId',
         'type',
         'subType',
+        'tenantId',
+        'clientId',
         'propertyId',
         'narration',
     ];
 
-    // defining polymorphic relationship
-    public function entity()
+    public function tenant()
     {
-        return $this->morphTo();
+        return $this->belongsTo(tenants::class, 'tenantId');
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(clients::class, 'clientId');
     }
 
     public function property()
