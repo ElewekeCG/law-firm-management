@@ -22,7 +22,7 @@ class Trans extends Controller
         $transList = transactions::query()
         ->with(['tenant', 'client', 'property']) // Eager load relationships
         ->when($searchTerm, function ($query, $searchTerm) {
-            $query->orWhereHas('tenant', function ($q) use ($searchTerm) {
+            $query->whereHas('tenant', function ($q) use ($searchTerm) {
                     $q->where('firstName', 'like', '%' . $searchTerm . '%')
                     ->orWhere('lastName', 'like', '%' . $searchTerm . '%');
                 })
@@ -95,7 +95,7 @@ class Trans extends Controller
             $trans->update($data);
 
             // Redirect to the view transactions page
-            return redirect()->route('transactions.index')
+            return redirect()->route('transactions.view')
                 ->with('message', 'Transaction updated successfully');
         }
     }

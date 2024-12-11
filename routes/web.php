@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\SpeechController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CalendarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,12 +15,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('login');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+        return view('dashboard', compact('user'));
+    })->name('dashboard');
 });
 
+Route::group(['prefix' => 'speech', 'middleware' => 'auth'], function () {
+    Route::post('/transcribe', [SpeechController::class, 'transcribe'])->name('speech.transcribe');
+    Route::get('/showAdd', [speechController::class, 'index']);
+});
+
+Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
+    Route::post('/addClient', 'ClientsController@addClient');
+    Route::get('/edit/{id}', 'ClientsController@showEditClient')->name('clients.editClient');
+    Route::put('/update/{id}', 'ClientsController@updateClient');
+});
+
+// Route::get('/', function () {
+//     return view('login');
+// });
+
 // clients routes
-Route::group(['prefix' => 'clients'], function () {
+Route::group(['prefix' => 'clients', 'middleware' => 'auth'], function () {
     Route::get('/view', 'ClientsController@showClientsList')->name('clients.clientList');
     Route::get('/add', 'ClientsController@showAddClient')->name('clients.addClient');
     Route::post('/addClient', 'ClientsController@addClient');
@@ -27,7 +47,7 @@ Route::group(['prefix' => 'clients'], function () {
 });
 
 // cases and proceedings routes
-Route::group(['prefix' => 'cases'], function () {
+Route::group(['prefix' => 'cases', 'middleware' => 'auth'], function () {
     Route::get('/view', 'CaseController@index')->name('cases.allCases');
     Route::get('/add', 'CaseController@showAddCase')->name('cases.addCase');
     Route::post('/addCase', 'CaseController@addCase');
@@ -42,7 +62,7 @@ Route::group(['prefix' => 'cases'], function () {
 });
 
 // properties routes
-Route::group(['prefix' => 'properties'], function () {
+Route::group(['prefix' => 'properties', 'middleware' => 'auth'], function () {
     Route::get('/view', 'PropertiesController@index')->name('properties.view');
     Route::get('/add', 'PropertiesController@showAddProperty')->name('properties.add');
     Route::post('/addProp', 'PropertiesController@addProp');
@@ -51,7 +71,7 @@ Route::group(['prefix' => 'properties'], function () {
 });
 
 // tenants routes
-Route::group(['prefix' => 'tenants'], function () {
+Route::group(['prefix' => 'tenants', 'middleware' => 'auth'], function () {
     Route::get('/view', 'TenantsController@index')->name('tenants.view');
     Route::get('/add', 'TenantsController@showAdd')->name('tenants.add');
     Route::post('/addTenant', 'TenantsController@addTenant');
@@ -59,22 +79,25 @@ Route::group(['prefix' => 'tenants'], function () {
     Route::put('/update/{id}', 'TenantsController@update');
 });
 
-// appointments route
-Route::group(['prefix' => 'appointments'], function () {
-    Route::get('/view', 'Appointments@index')->name('appointments.view');
-    Route::get('/add', 'Appointments@showAdd')->name('appointments.add');
-    Route::post('/addAppt', 'Appointments@addAppt');
-    Route::get('/edit/{id}', 'Appointments@showEdit')->name('appointments.edit');
-    Route::put('/update/{id}', 'Appointments@updateAppt');
-});
-
 // transactions route
-Route::group(['prefix' => 'transactions'], function () {
+Route::group(['prefix' => 'transactions', 'middleware' => 'auth'], function () {
     Route::get('/view', 'Trans@index')->name('transactions.view');
     Route::get('/add', 'Trans@showAdd')->name('transactions.add');
     Route::post('/create', 'Trans@addTrans');
     Route::get('/edit/{id}', 'Trans@showEdit')->name('transactions.edit');
     Route::put('/update/{id}', 'Trans@updateTrans');
+});
+
+// Appointments
+Route::group(['prefix' => 'appointments', 'middleware' => 'auth'], function () {
+    Route::get('/view', 'AppointmentController@index')->name('appointments.view');
+    Route::post('/store', 'AppointmentController@store')->name('appointments.store');
+    Route::get('/create', 'AppointmentController@create')->name('appointments.create');
+    Route::get('/{appointment}', 'AppointmentController@show')->name('appointments.show');
+    Route::get('/{appointment}/edit', 'AppointmentController@edit')->name('appointments.edit');
+    Route::put('/{appointment}', 'AppointmentController@update')->name('appointments.update');
+    Route::delete('/{appointment}', 'AppointmentController@destroy')->name('appointments.destroy');
+    Route::get('/available-slots', 'AppointmentController@availableSlots')->name('appointments.available-slots');
 });
 
 require __DIR__ . '/auth.php';

@@ -55,7 +55,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="percentage">Percentage<sup class="text-danger">*</sup></label>
+                                <label for="percentage">Professional fee<sup class="text-danger">*</sup></label>
                                 <input name="percentage" type="number" class="form-control" id="customer_email">
                             </div>
                         </div>

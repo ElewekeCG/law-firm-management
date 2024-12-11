@@ -60,11 +60,12 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
+                                            <th>Suit Number</th>
+                                            <th>Client</th>
+                                            <th>Lawyer</th>
                                             <th>Title</th>
                                             <th>Type</th>
                                             <th>Status</th>
-                                            <th>Client</th>
-                                            <th>Suit Number</th>
                                             <th>StartDate</th>
                                             <th>Adjourned Date</th>
                                             <th>Court</th>
@@ -72,11 +73,12 @@
                                     </thead>
                                     <tfoot>
                                         <tr>
+                                            <th>Suit Number</th>
+                                            <th>Client</th>
+                                            <th>Lawyer</th>
                                             <th>Title</th>
                                             <th>Type</th>
                                             <th>Status</th>
-                                            <th>Client</th>
-                                            <th>Suit Number</th>
                                             <th>StartDate</th>
                                             <th>Adjourned Date</th>
                                             <th>Court</th>
@@ -85,11 +87,12 @@
                                     <tbody>
                                         @foreach ($caseList as $case)
                                             <tr>
+                                                <td>{{ $case->suitNumber }}</td>
+                                                <td>{{ $case->client->name }}</td>
+                                                <td>{{ $case->lawyer->name }}</td>
                                                 <td>{{ $case->title }}</td>
                                                 <td>{{ $case->type }}</td>
                                                 <td>{{ $case->status }}</td>
-                                                <td>{{ $case->client->full_name }}</td>
-                                                <td>{{ $case->suitNumber }}</td>
                                                 <td>{{ $case->startDate }}</td>
                                                 <td>{{ $case->nextAdjournedDate }}</td>
                                                 <td>{{ $case->assignedCourt }}</td>

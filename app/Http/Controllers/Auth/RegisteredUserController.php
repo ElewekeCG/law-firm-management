@@ -24,18 +24,25 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'in: lawyer,client,clerk']
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return response()->noContent();
+        return response()->route('dashboard')->with('success', 'Registration successful');
+    }
+
+    public function showReg()
+    {
+        return view('auth.register');
     }
 }

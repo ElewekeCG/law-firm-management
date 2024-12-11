@@ -71,7 +71,7 @@
                                             <th>Landlord</th>
                                             <th>Address</th>
                                             <th>Rate</th>
-                                            <th>Percentage</th>
+                                            <th>Professional Fee</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>

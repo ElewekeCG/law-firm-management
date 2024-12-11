@@ -25,7 +25,7 @@
                 <h5 class="py-2">Edit Transaction</h5>
             </div>
             <div class="card-body">
-                <form id="merchant-customer-form" action="{{ url('transactions/update'. $trans->id) }}" method="POST">
+                <form id="merchant-customer-form" action="{{ url('transactions/update/'. $trans->id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="row">

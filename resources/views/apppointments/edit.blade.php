@@ -22,21 +22,21 @@
 
         <div class="card card-body">
             <div class="card-body">
-                <h5 class="py-2">Edit Property</h5>
+                <h5 class="py-2">Edit Appointment</h5>
             </div>
             <div class="card-body">
-                @if ($prop)
-                    <form id="merchant-customer-form" action="{{ url('properties/update/' . $prop->id) }}" method="POST">
+                @if ($appt)
+                    <form id="merchant-customer-form" action="{{ url('appointments/update/' . $appt->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Landlord</label>
+                                    <label>Client Name</label>
                                     <select name="clientId" class="form-control select2" id="clientSelect">
-                                        <option value="-1">Select Landlord</option>
+                                        <option value="-1">Select Client</option>
                                         @foreach ($clients as $client)
-                                            <option value="{{ $client->id }}" {{ $prop->clientId == $client->id ? 'selected' : '' }}>
+                                            <option value="{{ $client->id }}" {{ $appt->clientId == $client->id ? 'selected' : '' }}>
                                                 {{ $client->full_name }}
                                             </option>
                                         @endforeach
@@ -45,27 +45,13 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="address">Address<sup class="text-danger">*</sup></label>
-                                    <input name="address" type="text" class="form-control" placeholder="E.g Criminal"
-                                        id="customer_last_name" required="" value="{{ old('address', $prop->address) }}">
+                                    <label for="appointmentDate">Date<sup class="text-danger">*</sup></label>
+                                    <input name="appointmentDate" type="date" class="form-control"
+                                        id="customer_last_name" value="{{ old('appointmentDate', $appt->appointmentDate) }}">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="rate">Rate<sup class="text-danger">*</sup></label>
-                                    <input name="rate" type="number" class="form-control" id="customer_email" required="" value="{{ old('rate', $prop->rate) }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="percentage">Professional fee<sup class="text-danger">*</sup></label>
-                                    <input name="percentage" type="number" class="form-control" id="customer_email" required="" value="{{ old('percentage', $prop->percentage) }}">
-                                </div>
-                            </div>
-                        </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <button id="add-customer-btn" class="btn btn-primary col-md-3">Save</button>

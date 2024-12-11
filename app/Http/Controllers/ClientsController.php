@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
-use App\Models\clients;
+use App\Models\ClientModel;
 use Illuminate\Http\Request;
 
 class ClientsController extends Controller
@@ -15,7 +15,7 @@ class ClientsController extends Controller
         $searchTerm = $request->input('search', '');
 
         // filter by search term if provided
-        $clientList = clients::where('firstName', 'like', '%' . $searchTerm . '%')
+        $clientList = ClientModel::where('firstName', 'like', '%' . $searchTerm . '%')
         ->paginate($perPage);
 
         return view('clients.clientList', compact( 'clientList'));
@@ -28,14 +28,14 @@ class ClientsController extends Controller
 
     public function showEditClient($id)
     {
-        $client = clients::find($id);
+        $client = ClientModel::find($id);
         return view('clients.editClient', compact('client'));
     }
 
     public function updateClient(Request $request, $id)
     {
         // Find the client to be updated
-        $client = clients::findOrFail($id);
+        $client = ClientModel::findOrFail($id);
 
         if ($request->isMethod('put')) {
 
@@ -81,7 +81,7 @@ class ClientsController extends Controller
             ]);
 
             // Create a new client using the validated data
-            $client = clients::create([
+            $client = ClientModel::create([
                 'firstName' => $validatedData['firstName'],
                 'lastName' => $validatedData['lastName'],
                 'address' => $validatedData['address'],
@@ -94,18 +94,5 @@ class ClientsController extends Controller
         }
     }
 
-    // public function deleteCategory($id)
-    // {
-    //     // Validate that the category exists
-    //     $category = Category::find($id);
-
-    //     if (!$category) {
-    //         return redirect()->back()->with('error', 'Category not found');
-    //     }
-
-    //     // Proceed with deletion if category exists
-    //     $category->delete();
-
-    //     return redirect()->back()->with('message', 'Category deleted successfully');
-    // }
+    
 }

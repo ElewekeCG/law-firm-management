@@ -15,15 +15,12 @@ return new class extends Migration
     {
         Schema::create('cases', function (Blueprint $table) {
             $table->id();
+            $table->string('suitNumber')->unique();
+            $table->foreignId('clientId')->constrained('users');
+            $table->foreignId('lawyerId')->constrained('users');
             $table->string('title');
             $table->string('type');
             $table->string('status');
-            $table->unsignedBigInteger('clientId');
-            $table->foreign('clientId')
-                  ->references('id')
-                  ->on('clients')
-                  ->onDelete('cascade');
-            $table->string('suitNumber')->unique();
             $table->date('startDate');
             $table->dateTime('nextAdjournedDate');
             $table->string('assignedCourt');

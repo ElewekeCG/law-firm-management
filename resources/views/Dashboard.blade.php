@@ -1,9 +1,9 @@
 @extends('layout.layout');
 @section('content')
 <!-- Content Wrapper -->
-<div id="content-wrapper" class="d-flex flex-column">
+{{-- <div id="content-wrapper" class="d-flex flex-column"> --}}
     <!-- Main Content -->
-    <div id="content">
+    {{-- <div id="content"> --}}
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
@@ -336,9 +336,9 @@
         </div>
         <!-- /.container-fluid -->
 
-    </div>
+    {{-- </div> --}}
     <!-- End of Main Content -->
-</div>
+{{-- </div> --}}
 <!-- End of Content Wrapper -->
 
 @endsection

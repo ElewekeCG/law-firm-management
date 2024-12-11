@@ -1,13 +1,10 @@
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <!-- Sidebar - Brand -->
+    <!-- Sidebar - head -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon">
             <i class="fa-solid fa-scale-balanced"></i>
-            {{-- <div class=" sidebar-card d-none d-lg-flex">
-                <img class="sidebar-card-illustration mb-2" src="{{ url('assets/img/lfms.png') }}" alt="...">
-            </div> --}}
         </div>
         <div class="sidebar-brand-text mx-3">LFMS</div>
     </a>
@@ -17,7 +14,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="{{ url('/dashboard') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
@@ -30,12 +27,11 @@
         Firm Management
     </div>
 
-    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- clients-->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClients"
             aria-expanded="true" aria-controls="collapseClients">
             <i class="fa-solid fa-users"></i>
-            {{-- <i class="fas fa-fw fa-cog"></i> --}}
             <span>Clients</span>
         </a>
         <div id="collapseClients" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -47,12 +43,27 @@
         </div>
     </li>
 
-    <!-- Nav Item - Utilities Collapse Menu -->
+    {{-- appointments --}}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSch"
+            aria-expanded="true" aria-controls="collapseSch">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Appointments</span>
+        </a>
+        <div id="collapseSch" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Appointments</h6>
+                <a class="collapse-item" href="{{ url('appointments/view') }}">View Appointment</a>
+                <a class="collapse-item" href="{{ url('appointments/create') }}">Add Appointment</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Cases -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCases"
             aria-expanded="true" aria-controls="collapseCases">
             <i class="fa-solid fa-file"></i>
-            {{-- <i class="fas fa-fw fa-wrench"></i> --}}
             <span>Cases</span>
         </a>
         <div id="collapseCases" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
@@ -61,7 +72,6 @@
                 <a class="collapse-item" href="{{ url('cases/view') }}">View Cases</a>
                 <a class="collapse-item" href="{{ url('cases/add') }}">Add new Brief</a>
                 <a class="collapse-item" href="utilities-animation.html">Record of Proceedings</a>
-                {{-- <a class="collapse-item" href="utilities-other.html">Add Record of Proceedings</a> --}}
             </div>
         </div>
     </li>
@@ -74,28 +84,26 @@
         Property Management
     </div>
 
-    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- properties -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProps"
             aria-expanded="true" aria-controls="collapseProps">
             <i class="fa-solid fa-building"></i>
-            {{-- <i class="fas fa-fw fa-folder"></i> --}}
             <span>Properties</span>
         </a>
         <div id="collapseProps" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                {{-- <h6 class="collapse-header">Login Screens:</h6> --}}
                 <a class="collapse-item" href="{{ url('properties/view') }}">View Properties</a>
                 <a class="collapse-item" href="{{ url('properties/add') }}">Add a new Property</a>
             </div>
         </div>
     </li>
 
+    {{-- tenants --}}
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTenants"
             aria-expanded="true" aria-controls="collapseTenants">
             <i class="fa-solid fa-users"></i>
-            {{-- <i class="fas fa-fw fa-wrench"></i> --}}
             <span>Tenants</span>
         </a>
         <div id="collapseTenants" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
@@ -103,16 +111,22 @@
                 <h6 class="collapse-header">Manage Tenants</h6>
                 <a class="collapse-item" href="{{ url('tenants/view') }}">View Tenants</a>
                 <a class="collapse-item" href="{{ url('tenants/add') }}">Add a new Tenant</a>
-                {{-- <a class="collapse-item" href="utilities-other.html">Add Record of Proceedings</a> --}}
             </div>
         </div>
     </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Extras
+    </div>
 
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTrans"
             aria-expanded="true" aria-controls="collapseTrans">
             <i class="fa-solid fa-coins"></i>
-            {{-- <i class="fas fa-fw fa-folder"></i> --}}
             <span>Transactions</span>
         </a>
         <div id="collapseTrans" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
@@ -121,12 +135,11 @@
                 <h6 class="collapse-header">Transactions</h6>
                 <a class="collapse-item" href="{{ url('transactions/add') }}">Add Transaction</a>
                 <a class="collapse-item" href="{{ url('transactions/view') }}">Manage Transactions</a>
-                {{-- <a class="collapse-item" href="">Expenses</a> --}}
             </div>
         </div>
     </li>
 
-    <!-- Nav Item - Tables -->
+    <!-- Reports -->
     <li class="nav-item">
         <a class="nav-link" href="tables.html">
             <i class="fas fa-fw fa-table"></i>
@@ -135,7 +148,7 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
-
+    <a href="{{ url('logout') }}">logout</a>
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>

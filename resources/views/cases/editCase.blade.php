@@ -32,27 +32,9 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="title">Title<sup class="text-danger">*</sup></label>
-                                    <input name="title" type="text" class="form-control"
-                                        placeholder="E.g John Doe vs Jane Doe" id="customer_first_name" required=""
-                                        value="{{ old('title', $case->title) }}">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="type">Type<sup class="text-danger">*</sup></label>
-                                    <input name="type" type="text" class="form-control" placeholder="E.g Criminal"
-                                        id="customer_last_name" required="" value="{{ old('type', $case->type) }}">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="status">Status<sup class="text-danger">*</sup></label>
-                                    <input name="status" type="text" class="form-control" placeholder="E.g for hearing"
-                                        id="customer_email" required="" value="{{ old('status', $case->status) }}">
+                                    <label for="suitNumber">Suit Number<sup class="text-danger">*</sup></label>
+                                    <input name="suitNumber" type="text" class="form-control" placeholder=""
+                                        id="customer_email" value="{{ old('suitNumber', $case->suitNumber) }}">
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -62,10 +44,33 @@
                                         <option value="-1">Select Client</option>
                                         @foreach ($clients as $client)
                                             <option value="{{ $client->id }}" {{ $case->clientId == $client->id ? 'selected' : '' }}>
-                                                {{ $client->full_name }}
+                                                {{ $client->name }}
                                             </option>
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Assigned Lawyer</label>
+                                    <select name="lawyerId" class="form-control select2" id="clientSelect">
+                                        <option value="-1">Select Lawyer</option>
+                                        @foreach ($lawyers as $lawyer)
+                                            <option value="{{ $lawyer->id }}" {{ $case->lawyerId == $lawyer->id ? 'selected' : '' }}>
+                                                {{ $lawyer->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="title">Title<sup class="text-danger">*</sup></label>
+                                    <input name="title" type="text" class="form-control"
+                                        placeholder="E.g John Doe vs Jane Doe" id="customer_first_name" required=""
+                                        value="{{ old('title', $case->title) }}">
                                 </div>
                             </div>
                         </div>
@@ -73,11 +78,22 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="suitNumber">Suit Number<sup class="text-danger">*</sup></label>
-                                    <input name="suitNumber" type="text" class="form-control" placeholder=""
-                                        id="customer_email" value="{{ old('suitNumber', $case->suitNumber) }}">
+                                    <label for="type">Type<sup class="text-danger">*</sup></label>
+                                    <input name="type" type="text" class="form-control" placeholder="E.g Criminal"
+                                        id="customer_last_name" required="" value="{{ old('type', $case->type) }}">
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="status">Status<sup class="text-danger">*</sup></label>
+                                    <input name="status" type="text" class="form-control" placeholder="E.g for hearing"
+                                        id="customer_email" required="" value="{{ old('status', $case->status) }}">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="startDate">Start Date<sup class="text-danger">*</sup></label>
@@ -85,17 +101,17 @@
                                         id="customer_email" value="{{ old('startDate', $case->startDate) }}">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="nextAdjournedDate">Next Adjourned Date<sup
                                             class="text-danger">*</sup></label>
                                     <input name="nextAdjournedDate" type="datetime-local" class="form-control"
-                                        placeholder="" id="customer_email"
+                                        id="customer_email"
                                         value="{{ old('nextAdjournedDate', $case->nextAdjournedDate) }}">
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="assignedCourt">Assigned Court<sup class="text-danger">*</sup></label>

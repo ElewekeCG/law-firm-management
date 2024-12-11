@@ -2,70 +2,79 @@
 
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
-use App\Models\cases;
-use App\Models\clients;
+use App\Models\Cases;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CaseController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, Cases $cases)
     {
-        // Default to 10 if not specified
+        $user = auth()->user();
+
+        if($user->role === 'lawyer' || $user->role === 'clerk') {
+            // lawyers and clerks can view all cases
+            $cases = Cases::query();
+        } elseif ($user->role === 'client') {
+            // clients can only view cases they are involved in
+            $cases = Cases::where('clientId', $user->id);
+        } else {
+            abort(403, 'Unauthorized');
+        }
+
+        /**
+            * search and pagination
+            * Default to 10 if not specified
+        **/
         $perPage = $request->input('dataTable_length', 10);
         // Default to an empty string if no search term
         $searchTerm = $request->input('search', '');
 
         // filter by search term if provided
-        $caseList = cases::where('title', 'like', '%' . $searchTerm . '%')
+        $caseList = $cases->where('title', 'like', '%' . $searchTerm . '%')
             ->paginate($perPage);
 
         return view('cases.allCases', compact('caseList'));
     }
 
-    public function showAddCase()
+    public function showAddCase(Cases $cases)
     {
-        $clients = clients::all();
-        return view('cases.addCase', compact('clients'));
+        $this->authorize('create', $cases);
+        $lawyers = User::lawyers()->get();
+        $clients = User::clients()->get();
+        return view('cases.addCase', compact('lawyers', 'clients'));
     }
 
-    public function showEditCase($id)
+    public function showEditCase($id, Cases $cases)
     {
-        $case = cases::find($id);
-        $clients = clients::all();
-        return view('cases.editCase', [
-            'case' => $case,
-            'clients' => $clients
-        ]);
+        $this->authorize('update', $cases);
+        $case = Cases::find($id);
+        $lawyers = User::lawyers()->get();
+        $clients = User::clients()->get();
+        return view('cases.editCase', compact('case', 'lawyers', 'clients'));
     }
 
-    public function updateCase(Request $request, $id)
+    public function updateCase(Request $request, $id, Cases $cases)
     {
+        $this->authorize('update', $cases);
         // find the case to be updated
-        $case = cases::findOrFail($id);
+        $case = Cases::findOrFail($id);
 
         if ($request->isMethod('put')) {
             $validatedData = $request->validate([
-                'title' => 'required|string|max:100',
-                'type' => 'required|string|max:20',
-                'status' => 'required|string|max:20',
-                'clientId' => 'required|exists:clients,id',
-                'suitNumber' => 'required|string|max:20',
-                'startDate' => 'required|date',
-                'nextAdjournedDate' => 'required|date:d/m/Y g:i A | after:now',
-                'assignedCourt' => 'required|string|max:50',
+                'suitNumber' => 'sometimes|string|max:20',
+                'clientId' => 'sometimes|exists:users,id',
+                'lawyerId' => 'sometimes|exists:users,id',
+                'title' => 'sometimes|string|max:100',
+                'type' => 'sometimes|string|max:20',
+                'status' => 'sometimes|string|max:255',
+                'startDate' => 'sometimes|date',
+                'nextAdjournedDate' => 'sometimes|date:d/m/Y g:i A | after:now',
+                'assignedCourt' => 'sometimes|string|max:255',
             ]);
 
-            // update therequired field
-            $case->update([
-                'title' => $validatedData['title'],
-                'type' => $validatedData['type'],
-                'status' => $validatedData['status'],
-                'clientId' => $validatedData['clientId'],
-                'suitNumber' => $validatedData['suitNumber'],
-                'startDate' => $validatedData['startDate'],
-                'nextAdjournedDate' => $validatedData['nextAdjournedDate'],
-                'assignedCourt' => $validatedData['assignedCourt'],
-            ]);
+            // update the required field
+            $case->update($validatedData);
 
             // Redirect to the view cases page
             return redirect()->route('cases.allCases')
@@ -73,36 +82,24 @@ class CaseController extends Controller
         }
     }
 
-    public function addCase(Request $request)
+    public function addCase(Request $request, Cases $cases)
     {
+        // authorize case creation
+        $this->authorize('create', $cases);
         if ($request->isMethod('post')) {
             $validatedData = $request->validate([
+                'suitNumber' => 'required|string|max:20|unique:cases,suitNumber',
+                'clientId' => 'required|exists:users,id',
+                'lawyerId' => 'required|exists:users,id',
                 'title' => 'required|string|max:100',
                 'type' => 'required|string|max:20',
-                'status' => 'required|string|max:20',
-                'clientId' => 'required|exists:clients,id',
-                'suitNumber' => 'required|string|max:20|unique:cases,suitNumber',
+                'status' => 'required|string|max:255',
                 'startDate' => 'required|date',
                 'nextAdjournedDate' => 'required|date:d/m/Y g:i A | after:now',
-                'assignedCourt' => 'required|string|max:50',
+                'assignedCourt' => 'required|string|max:255',
             ]);
 
-            // $nextAdjournedDate = Carbon::createFromFormat('m/d/Y g:i A', $validatedData['nextAdjournedDate']);
-            // if ($nextAdjournedDate === false) {
-            //     return redirect()->back()->withErrors(['nextAdjournedDate' => 'Invalid date/time format.']);
-            // }
-
-            $case = cases::create([
-                'title' => $validatedData['title'],
-                'type' => $validatedData['type'],
-                'status' => $validatedData['status'],
-                'clientId' => $validatedData['clientId'],
-                'suitNumber' => $validatedData['suitNumber'],
-                'startDate' => $validatedData['startDate'],
-                'nextAdjournedDate' => $validatedData['nextAdjournedDate'],
-                // 'nextAdjournedDate' => Carbon::createFromFormat('m/d/Y g:i A', $validatedData['nextAdjournedDate'])->format('d/m/Y h:i A'),
-                'assignedCourt' => $validatedData['assignedCourt'],
-            ]);
+            Cases::create($validatedData);
 
             return redirect()->back()->with('message', 'Case added successfully');
         }
