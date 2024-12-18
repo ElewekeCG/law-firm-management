@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Cases;
 use App\Models\User;
+use App\Notifications\CaseUpdated;
 use Illuminate\Http\Request;
+use Notification;
 
 class CaseController extends Controller
 {
@@ -75,6 +77,16 @@ class CaseController extends Controller
 
             // update the required field
             $case->update($validatedData);
+
+            // notify client associated with case
+            $client = User::find($case->clientId);
+            if ($client) {
+                $client->notify(new CaseUpdated($case));
+            }
+
+            // notify lawyers
+            $lawyers = User::lawyers()->get();
+            Notification::send($lawyers, new CaseUpdated($case));
 
             // Redirect to the view cases page
             return redirect()->route('cases.allCases')

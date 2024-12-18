@@ -34,6 +34,18 @@ class AppointmentPolicy
         return true;
     }
 
+    public function edit(User $user)
+    {
+        // Anyone authenticated can create an appointment
+        return true;
+    }
+
+    public function cancel(User $user)
+    {
+        // Anyone authenticated can cancel an appointment
+        return true;
+    }
+
     /**
      * Determine if the user can update the appointment
      */

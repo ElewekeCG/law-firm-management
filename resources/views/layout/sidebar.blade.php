@@ -53,7 +53,7 @@
         <div id="collapseSch" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Appointments</h6>
-                <a class="collapse-item" href="{{ url('appointments/view') }}">View Appointment</a>
+                <a class="collapse-item" href="{{ url('appointments/view') }}">Manage Appointments</a>
                 <a class="collapse-item" href="{{ url('appointments/create') }}">Add Appointment</a>
             </div>
         </div>

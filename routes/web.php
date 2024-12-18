@@ -93,11 +93,19 @@ Route::group(['prefix' => 'appointments', 'middleware' => 'auth'], function () {
     Route::get('/view', 'AppointmentController@index')->name('appointments.view');
     Route::post('/store', 'AppointmentController@store')->name('appointments.store');
     Route::get('/create', 'AppointmentController@create')->name('appointments.create');
-    Route::get('/{appointment}', 'AppointmentController@show')->name('appointments.show');
-    Route::get('/{appointment}/edit', 'AppointmentController@edit')->name('appointments.edit');
-    Route::put('/{appointment}', 'AppointmentController@update')->name('appointments.update');
-    Route::delete('/{appointment}', 'AppointmentController@destroy')->name('appointments.destroy');
-    Route::get('/available-slots', 'AppointmentController@availableSlots')->name('appointments.available-slots');
+    Route::get('/show/{id}', 'AppointmentController@showOne')->name('appointments.show');
+    Route::get('/edit/{id}', 'AppointmentController@edit')->name('appointments.edit');
+    Route::put('/update/{id}', 'AppointmentController@update')->name('appointments.update');
+    Route::put('/cancel/{id}', 'AppointmentController@cancel')->name('appointments.cancel');
+    Route::get('/available-slots/{lawyerId}/{date}', 'AppointmentController@getAvailableSlots')->name('appointments.available-slots');
+});
+
+// Notifications
+Route::group(['prefix' => 'notifications', 'middleware' => 'auth'], function () {
+    Route::get('/view', 'Notifications@index')->name('notifications.view');
+    Route::post('/mark-as-read/{id}', 'Notifications@markAsRead')->name('notifications.marks-as-read');
+    Route::post('/mark-all-raed', 'Notifications@markAllAsRead');
+    Route::get('/count', 'Notifications@showEdit')->name('notifications.count');
 });
 
 require __DIR__ . '/auth.php';

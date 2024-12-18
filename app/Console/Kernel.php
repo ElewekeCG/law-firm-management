@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('calendar:sync')->hourly();
+        $schedule->command('slots:generate')->daily();
     }
 
     /**

@@ -47,7 +47,7 @@ class Appointments extends Model
     public function scopeUpcoming($query)
     {
         return $query->where('startTime', '>', now())
-                     ->orderBy('startTime', 'asc');
+            ->orderBy('startTime', 'asc');
     }
 
     public function scopeForLawyer($query, $lawyerId)
@@ -60,10 +60,22 @@ class Appointments extends Model
         return $query->where('clientId', $clientId);
     }
 
+    public function scopeForCase($query, $caseId)
+    {
+        return $query->where('caseId', $caseId);
+    }
+
     // Helpers
     public function isDuration($minutes = 30)
     {
         return $this->startTime->diffInMinutes($this->endTime) === $minutes;
+    }
+
+    public function getAvailableSlotAttribute()
+    {
+        return Available_slots::where('startTime', $this->startTime)
+            ->where('endTime', $this->endTime)
+            ->first();
     }
 
 
