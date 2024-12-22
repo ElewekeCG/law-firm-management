@@ -1,7 +1,7 @@
 @extends('layout.layout')
 @section('content')
 
-    <div class="card shadow mb-4">
+    <div class="container-fluid py-4">
         @if (Session::has('message'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ Session::get('message') }}
@@ -15,14 +15,19 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-        <div class="card-header py-3">
-            <h3 class="m-0 font-weight-bold text-primary">Tenants</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="m-0 font-weight-bold text-primary">
+                Tenants
+            </h3>
+            <a href="{{ route('tenants.add') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add Tenant
+            </a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
                     <div class="row">
-                        <div class="col-sm-12 col-md-6">
+                        <div class="col-md-4">
                             <div class="dataTables_length" id="dataTable_length">
                                 <label>Show
                                     <select id="dataTableLength" name="dataTable_length"
@@ -40,7 +45,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-12 col-md-8">
                             <div id="dataTable_filter" class="dataTables_filter">
                                 <form action="{{ route('tenants.view') }}" method="GET" class=" mb-4">
                                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by property or name" class="form-control mr-2">
@@ -66,6 +71,7 @@
                                             <th>Accom Type</th>
                                             <th>Rent</th>
                                             <th>Property</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -76,6 +82,7 @@
                                             <th>Accom Type</th>
                                             <th>Rent</th>
                                             <th>Property</th>
+                                            <th>Action</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -85,7 +92,7 @@
                                                 <td>{{ $tenant->email }}</td>
                                                 <td>{{ $tenant->paymentType }}</td>
                                                 <td>{{ $tenant->accomType }}</td>
-                                                <td>{{ $tenant->rentAmt }}</td>
+                                                <td>${{ number_format($tenant->rentAmt, 2) }}</td>
                                                 <td>{{ $tenant->property->address }}</td>
                                                 <td>
                                                     <a class="me-3" href="{{ url('tenants/edit/' . $tenant->id) }}">

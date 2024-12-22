@@ -73,9 +73,11 @@
                             <div class="form-group">
                                 <label>Tenant</label>
                                 <select name="tenantId" id="tenantId" class="form-control select2">
-                                    <option value="-1">Select Tenant</option>
                                     @foreach ($tenants as $tenant)
-                                        <option value="{{ $tenant->id }}" {{ $tenant->tenantId == $tenant->id ? 'selected' : '' }}>{{ $tenant->full_name }}</option>
+                                        <option value="{{ $tenant->id }}"
+                                            {{ $tenant->id == $trans->tenantId ? 'selected' : '' }}>
+                                            {{ $tenant->full_name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -84,9 +86,11 @@
                             <div class="form-group">
                                 <label>Client</label>
                                 <select name="clientId" class="form-control select2" id="clientId">
-                                    <option value="-1">Select Client</option>
                                     @foreach ($clients as $client)
-                                        <option value="{{ $client->id }}" {{ $client->clientId == $client->id ? 'selected' : '' }}>{{ $client->full_name }}</option>
+                                        <option value="{{ $client->id }}"
+                                            {{ $client->id == $trans->clientId ? 'selected' : '' }}>
+                                            {{ $client->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -97,9 +101,10 @@
                             <div class="form-group">
                                 <label>Property</label>
                                 <select name="propertyId" class="form-control select2" id="propertyId">
-                                    <option value="-1">Select Property</option>
                                     @foreach ($properties as $prop)
-                                        <option value="{{ $prop->id }}" {{ $prop->propertyId == $prop->id ? 'selected' : '' }}>{{ $prop->address }}</option>
+                                        <option value="{{ $prop->id }}"
+                                            {{ $prop->id == $trans->propertyId ? 'selected' : '' }}>
+                                            {{ $prop->address }}</option>
                                     @endforeach
                                 </select>
                             </div>

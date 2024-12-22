@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\properties;
-use App\Models\clients;
+use App\Models\User;
 
 use Illuminate\Http\Request;
 
@@ -25,14 +25,14 @@ class PropertiesController extends Controller
 
     public function showAddProperty()
     {
-        $clients = clients::all();
+        $clients = User::clients()->get();
         return view('properties.add', compact('clients'));
     }
 
     public function showEditProperty($id)
     {
         $prop = properties::find($id);
-        $clients = clients::all();
+        $clients = User::clients()->get();
         return view('properties.edit', [
             'prop' => $prop,
             'clients' => $clients
@@ -45,20 +45,14 @@ class PropertiesController extends Controller
 
         if ($request->isMethod('put')) {
             $validatedData = $request->validate([
-                'clientId' => 'required|exists:clients,id',
+                'clientId' => 'required|exists:users,id',
                 'address' => 'required|string|max:100',
                 'rate' => 'required|integer|min:1000',
                 'percentage' => 'required|integer|min:0|max:50',
             ]);
 
             // update therequired field
-            $prop->update([
-                'clientId' => $validatedData['clientId'],
-                'address' => $validatedData['address'],
-                'rate' => $validatedData['rate'],
-                'percentage' => $validatedData['percentage'],
-            ]);
-
+            $prop->update($validatedData);
             // Redirect to the view properties page
             return redirect()->route('properties.view')
                 ->with('message', 'Property updated successfully');
@@ -69,18 +63,13 @@ class PropertiesController extends Controller
     {
         if ($request->isMethod('post')) {
             $validatedData = $request->validate([
-                'clientId' => 'required|exists:clients,id',
+                'clientId' => 'required|exists:users,id',
                 'address' => 'required|string|max:100',
                 'rate' => 'required|integer|min:1000',
                 'percentage' => 'required|integer|min:0|max:50',
             ]);
 
-            $newProp = properties::create([
-                'clientId' => $validatedData['clientId'],
-                'address' => $validatedData['address'],
-                'rate' => $validatedData['rate'],
-                'percentage' => $validatedData['percentage'],
-            ]);
+            properties::create($validatedData);
 
             return redirect()->back()->with('message', 'Property added successfully');
         }

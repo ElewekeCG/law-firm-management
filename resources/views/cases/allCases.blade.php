@@ -1,7 +1,7 @@
 @extends('layout.layout')
 @section('content')
 
-    <div class="card shadow mb-4">
+    <div class="container-fluid py-4">
         @if (Session::has('message'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ Session::get('message') }}
@@ -15,8 +15,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-        <div class="card-header py-3">
-            <h3 class="m-0 font-weight-bold text-primary">Cases</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="m-0 font-weight-bold text-primary">
+                Cases
+            </h3>
+            <a href="{{ route('cases.addCase') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add New
+            </a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -67,8 +72,8 @@
                                             <th>Type</th>
                                             <th>Status</th>
                                             <th>StartDate</th>
-                                            <th>Adjourned Date</th>
                                             <th>Court</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -79,9 +84,9 @@
                                             <th>Title</th>
                                             <th>Type</th>
                                             <th>Status</th>
-                                            <th>StartDate</th>
-                                            <th>Adjourned Date</th>
+                                            <th>Start Date</th>
                                             <th>Court</th>
+                                            <th>Action</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -94,7 +99,6 @@
                                                 <td>{{ $case->type }}</td>
                                                 <td>{{ $case->status }}</td>
                                                 <td>{{ $case->startDate }}</td>
-                                                <td>{{ $case->nextAdjournedDate }}</td>
                                                 <td>{{ $case->assignedCourt }}</td>
                                                 <td>
                                                     <a class="me-3" href="{{ url('cases/edit/' . $case->id) }}">

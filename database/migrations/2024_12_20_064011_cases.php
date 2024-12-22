@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('type');
             $table->string('status');
             $table->date('startDate');
-            $table->dateTime('nextAdjournedDate');
             $table->string('assignedCourt');
             $table->timestamps();
         });

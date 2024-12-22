@@ -9,10 +9,45 @@ use Illuminate\Http\Request;
 
 class ProceedingsController extends Controller
 {
+    public function index(Request $request)
+{
+    $user = auth()->user();
+
+    // Start with a base query that includes the case relationship
+    $records = proceedings::with('case');
+
+    if ($user->role === 'lawyer' || $user->role === 'clerk') {
+        // Lawyers and clerks can view all records
+        $records;
+    } elseif ($user->role === 'client') {
+        // Clients can only view records for their cases
+        $records->whereHas('case', function($query) use ($user) {
+            $query->where('clientId', $user->id);
+        });
+    } else {
+        abort(403, 'Unauthorized');
+    }
+
+    // Search and pagination
+    $perPage = $request->input('dataTable_length', 10);
+    $searchTerm = $request->input('search', '');
+
+    $recordsList = $records->when($searchTerm, function($query) use ($searchTerm) {
+            return $query->where(function($q) use ($searchTerm) {
+                $q->WhereHas('case', function($caseQuery) use ($searchTerm) {
+                      $caseQuery->where('title', 'like', '%' . $searchTerm . '%');
+                  });
+            });
+        })
+        ->paginate($perPage);
+
+    return view('cases.records', compact('recordsList'));
+}
+
     public function showAdd()
     {
         $cases = cases::all();
-        return view('cases.proceedings', compact('clients'));
+        return view('cases.proceedings', compact('cases'));
     }
 
     public function showEdit($id)
@@ -34,20 +69,16 @@ class ProceedingsController extends Controller
             $validatedData = $request->validate([
                 'caseId' => 'required|exists:cases,id',
                 'description' => 'required|string',
-                'requiredDoc' => 'string',
-                'dueDate' => 'date'
+                'requiredDoc' => 'nullable|string',
+                'dueDate' => 'nullable|date',
+                'docStatus' => 'required|in:pending,done'
             ]);
 
             // update the required field
-            $pro->update([
-                'caseId' => $validatedData['caseId'],
-                'description' => $validatedData['description'],
-                'requiredDoc' => $validatedData['requiredDoc'],
-                'dueDate' => $validatedData['dueDate'],
-            ]);
+            $pro->update($validatedData);
 
             // Redirect to the view cases page
-            return redirect()->route('cases.proceedings')
+            return redirect()->route('cases.viewRecord')
                 ->with('message', 'Record updated successfully');
         }
     }
@@ -58,16 +89,12 @@ class ProceedingsController extends Controller
             $validatedData = $request->validate([
                 'caseId' => 'required',
                 'description' => 'required|string',
-                'requiredDoc' => 'string',
-                'dueDate' => 'date'
+                'requiredDoc' => 'nullable|string',
+                'dueDate' => 'nullable|date',
+                'docStatus' => 'pending'
             ]);
 
-            $pro = cases::create([
-                'caseId' => $validatedData['caseId'],
-                'description' => $validatedData['description'],
-                'requiredDoc' => $validatedData['requiredDoc'],
-                'dueDate' => $validatedData['dueDate'],
-            ]);
+            proceedings::create($validatedData);
 
             return redirect()->back()->with('message', 'Record added successfully');
         }

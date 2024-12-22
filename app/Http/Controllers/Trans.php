@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\properties;
-use App\Models\clients;
+use App\Models\User;
 use App\Models\tenants;
 use App\Models\transactions;
 
@@ -43,7 +43,7 @@ class Trans extends Controller
     public function showAdd()
     {
         $properties = properties::all();
-        $clients = clients::all();
+        $clients = User::clients()->get();
         $tenants = tenants::all();
         return view('transactions.add', compact('properties', 'clients', 'tenants'));
     }
@@ -52,7 +52,7 @@ class Trans extends Controller
     {
         $trans = transactions::find($id);
         $properties = properties::all();
-        $clients = clients::all();
+        $clients = User::clients()->get();
         $tenants = tenants::all();
         return view('transactions.edit', [
             'properties' => $properties,
@@ -80,7 +80,7 @@ class Trans extends Controller
                 $rules['tenantId'] = 'required|exists:tenants,id';
                 $rules['propertyId'] = 'required|exists:properties,id';
             } elseif ($request->input('subType') === 'legalFee') {
-                $rules['clientId'] = 'required|exists:clients,id';
+                $rules['clientId'] = 'required|exists:users,id';
             } elseif ($request->input('type' === 'debit')) {
                 $rules['propertyId'] = 'required|exists:properties,id';
             }
@@ -115,7 +115,7 @@ class Trans extends Controller
                 $rules['tenantId'] = 'required|exists:tenants,id';
                 $rules['propertyId'] = 'required|exists:properties,id';
             } elseif ($request->input('subType') === 'legalFee') {
-                $rules['clientId'] = 'required|exists:clients,id';
+                $rules['clientId'] = 'required|exists:users,id';
             } elseif ($request->input('type' === 'debit')) {
                 $rules['propertyId'] = 'required|exists:properties,id';
             }

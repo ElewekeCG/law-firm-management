@@ -34,10 +34,10 @@
                                 <div class="form-group">
                                     <label>Landlord</label>
                                     <select name="clientId" class="form-control select2" id="clientSelect">
-                                        <option value="-1">Select Landlord</option>
                                         @foreach ($clients as $client)
-                                            <option value="{{ $client->id }}" {{ $prop->clientId == $client->id ? 'selected' : '' }}>
-                                                {{ $client->full_name }}
+                                            <option value="{{ $client->id }}"
+                                                {{ $prop->clientId == $client->id ? 'selected' : '' }}>
+                                                {{ $client->name }}
                                             </option>
                                         @endforeach
                                     </select>

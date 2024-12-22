@@ -71,7 +71,6 @@ class CaseController extends Controller
                 'type' => 'sometimes|string|max:20',
                 'status' => 'sometimes|string|max:255',
                 'startDate' => 'sometimes|date',
-                'nextAdjournedDate' => 'sometimes|date:d/m/Y g:i A | after:now',
                 'assignedCourt' => 'sometimes|string|max:255',
             ]);
 
@@ -107,7 +106,6 @@ class CaseController extends Controller
                 'type' => 'required|string|max:20',
                 'status' => 'required|string|max:255',
                 'startDate' => 'required|date',
-                'nextAdjournedDate' => 'required|date:d/m/Y g:i A | after:now',
                 'assignedCourt' => 'required|string|max:255',
             ]);
 

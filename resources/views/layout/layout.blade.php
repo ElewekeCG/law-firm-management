@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="Nonny">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" href="{{ url('public/favicon.png') }}">
 
     <title>LFMS</title>
     <!-- Custom styles for tables -->
@@ -18,12 +19,14 @@
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js'></script>
 
+    {{-- jquery for speech transcription and select2--}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <!-- FullCalendar Dependencies -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js'></script>
 
     {{-- select2 css --}}
-    {{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
     {{-- fontawesome icons --}}
@@ -75,9 +78,6 @@
     <script src="{{ url('assets/js/demo/chart-pie-demo.js') }}"></script>
     <script src="{{ url('js/demo/datatables-demo.js') }}"></script>
 
-    {{-- select 2 --}}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 </body>

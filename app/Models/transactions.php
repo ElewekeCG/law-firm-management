@@ -27,7 +27,7 @@ class transactions extends Model
 
     public function client()
     {
-        return $this->belongsTo(clients::class, 'clientId');
+        return $this->belongsTo(User::class, 'clientId');
     }
 
     public function property()

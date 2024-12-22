@@ -1,7 +1,7 @@
 @extends('layout.layout')
 @section('content')
 
-    <div class="card shadow mb-4">
+    <div class="container-fluid py-4">
         @if (Session::has('message'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ Session::get('message') }}
@@ -15,8 +15,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-        <div class="card-header py-3">
-            <h3 class="m-0 font-weight-bold text-primary">Recent Transactions</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="m-0 font-weight-bold text-primary">
+                Recent Transactions
+            </h3>
+            <a href="{{ route('transactions.add') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add New
+            </a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -68,6 +73,7 @@
                                             <th>Paid By</th>
                                             <th>Property</th>
                                             <th>Narration</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -79,12 +85,13 @@
                                             <th>Paid By</th>
                                             <th>Property</th>
                                             <th>Narration</th>
+                                            <th>Action</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
                                         @forelse ($transList as $trans)
                                             <tr>
-                                                <td>{{ $trans->amount }}</td>
+                                                <td>${{ number_format($trans->amount, 0) }}</td>
                                                 <td>{{ $trans->paymentDate }}</td>
                                                 <td>{{ $trans->type }}</td>
                                                 <td>{{ $trans->subType ?? '-' }}</td>
@@ -92,7 +99,7 @@
                                                     @if ($trans->subType === 'rent')
                                                         {{ $trans->tenant->full_name ?? '-' }}
                                                     @elseif ($trans->subType === 'legalFee')
-                                                        {{ $trans->client->full_name ?? '-' }}
+                                                        {{ $trans->client->name ?? '-' }}
                                                     @else
                                                         -
                                                     @endif

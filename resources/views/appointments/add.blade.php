@@ -26,23 +26,21 @@
             <div class="card-body">
                 <form id="merchant-customer-form" action="{{ route('appointments.store') }}" method="POST">
                     @csrf
-
-                    {{-- hidden input to capture selected dateTime --}}
-                    <input type="hidden" name="date" id="selected-date">
-                    <input type="hidden" name="lawyerId" id="selected-lawyer">
-
                     <div class="row">
-                        <div class="col-md-12">
-                            <div id="calendar"></div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="selected-date">Choose a Date</label>
+                                <input type="date" name="date" id="selected-date" class="form-control">
+                            </div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Lawyer</label>
-                                <select id="lawyer_select" class="form-control" required>
-                                    <option value="-1">Select Lawyer</option>
+                                <label for="lawyer_select">Lawyer</label>
+                                <select name="lawyerId" id="lawyer_select" class="form-control" required>
+                                    <option value="">Select Lawyer</option>
                                     @foreach ($lawyers as $lawyer)
                                         <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>
                                     @endforeach
@@ -92,7 +90,7 @@
                             <div class="form-group">
                                 <label>Client</label>
                                 <select name="clientId" id="client_select" class="form-control">
-                                    <option value="-1">Select Client</option>
+                                    <option value="">Select Client</option>
                                     @foreach ($clients as $client)
                                         <option value="{{ $client->id }}">{{ $client->name }}</option>
                                     @endforeach
@@ -126,6 +124,7 @@
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" id="selected-lawyer" name="selected_lawyer_id">
                     <div class="row">
                         <div class="col-md-6">
                             <button type="submit" class="btn btn-primary col-md-3" id="add-customer-btn">
@@ -142,9 +141,6 @@
 @endsection
 
 @section('scripts')
-    {{-- <!-- FullCalendar Dependencies -->
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/main.min.js'></script> --}}
     <script>
         document.getElementById('merchant-customer-form').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -184,38 +180,10 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // calendar for taking date inputs and getting available slots
-            if (typeof FullCalendar === 'undefined') {
-                console.error('FullCalendar is not loaded');
-                return;
-            }
             const lawyerSelect = document.getElementById('lawyer_select');
             const dateInput = document.getElementById('selected-date');
             const timeSlotsSelect = document.getElementById('time_slots');
             const selectedLawyer = document.getElementById('selected-lawyer');
-
-            let calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
-                initialView: 'timeGridWeek',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                selectable: true,
-                selectMirror: true,
-                allDaySlot: false,
-                slotMinTime: '08:00:00',
-                slotMaxTime: '18:00:00',
-                select: function(info) {
-                    // set hidden inputs
-                    dateInput.value = info.startStr;
-                    selectedLawyer.value = lawyerSelect.value;
-
-                    fetchAvailableSlots(lawyerSelect.value, dateInput.value);
-                }
-            });
-
-            calendar.render();
 
             const formatDate = (dateInput) => {
                 return new Date(dateInput).toISOString().split('T')[0];
@@ -224,7 +192,6 @@
             const fetchAvailableSlots = async (lawyerId, dateInput) => {
                 const date = formatDate(dateInput);
 
-                // console.log(`fetching slot for lawyer id: ${lawyerId}, ${date}`);
                 try {
                     const response = await fetch(`/appointments/available-slots/${lawyerId}/${date}`);
 
@@ -237,16 +204,22 @@
                     const slots = await response.json();
 
                     timeSlotsSelect.innerHTML = '<option value="" disabled selected>Select a slot</option>';
+                    const availableSlots = slots.filter(slot => slot.status === 'available');
 
-                    slots.forEach(slot => {
-                        if (slot.status === 'available') {
+                    if (availableSlots.length === 0) {
+                        const noSlotsOption = document.createElement('option');
+                        noSlotsOption.textContent = 'No slots available';
+                        noSlotsOption.disabled = true;
+                        timeSlotsSelect.appendChild(noSlotsOption);
+                    } else {
+                        availableSlots.forEach(slot => {
                             const newOption = document.createElement('option');
                             newOption.value = slot.id;
                             newOption.textContent =
                                 `${new Date(slot.startTime).toLocaleString()} - ${new Date(slot.endTime).toLocaleString()}`;
                             timeSlotsSelect.appendChild(newOption);
-                        }
-                    });
+                        });
+                    }
 
                 } catch (error) {
                     console.error('Fetch error:', error);
@@ -261,6 +234,12 @@
             lawyerSelect.addEventListener('change', function() {
                 if (dateInput.value) {
                     fetchAvailableSlots(lawyerSelect.value, dateInput.value);
+                }
+            });
+
+            dateInput.addEventListener('change', function() {
+                if (lawyerSelect.value) {
+                    fetchAvailableSlots(lawyerSelect.value, this.value);
                 }
             });
 

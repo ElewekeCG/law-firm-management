@@ -37,7 +37,7 @@
                             <div class="form-group">
                                 <label>Client Name</label>
                                 <select name="clientId" class="form-control select2" id="clientSelect">
-                                    <option value="-1">Select Client</option>
+                                    <option value="">Select Client</option>
                                     @foreach ($clients as $client)
                                         <option value="{{ $client->id }}">{{ $client->name }}</option>
                                     @endforeach
@@ -51,7 +51,7 @@
                             <div class="form-group">
                                 <label>Assigned Lawyer</label>
                                 <select name="lawyerId" class="form-control select2" id="lawyerSelect">
-                                    <option value="-1">Select Lawyer</option>
+                                    <option value="">Select Lawyer</option>
                                     @foreach ($lawyers as $lawyer)
                                         <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>
                                     @endforeach
@@ -91,15 +91,6 @@
                                     id="customer_email">
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="nextAdjournedDate">Next Adjourned Date<sup class="text-danger">*</sup></label>
-                                <input name="nextAdjournedDate" type="datetime-local" class="form-control" placeholder=""
-                                    id="customer_email">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="assignedCourt">Assigned Court<sup class="text-danger">*</sup></label>

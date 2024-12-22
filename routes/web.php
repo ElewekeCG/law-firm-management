@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\SpeechController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\CalendarController;
 
 /*
@@ -15,11 +16,11 @@ use App\Http\Controllers\CalendarController;
 |
 */
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        $user = auth()->user();
-        return view('dashboard', compact('user'));
-    })->name('dashboard');
+Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
+    Route::get('/', [Dashboard::class, 'showDashboard']);
+    Route::get('/upcoming', 'Dashboard@getAppointments')->name('dashboard.upcoming');
+    Route::get('/upcomingCases', 'Dashboard@getUpcomingCases')->name('dashboard.upcomingCases');
+    Route::get('/pendingDocs', 'Dashboard@getPendingDocs')->name('dashboard.pendingDocs');
 });
 
 Route::group(['prefix' => 'speech', 'middleware' => 'auth'], function () {
@@ -32,10 +33,6 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/edit/{id}', 'ClientsController@showEditClient')->name('clients.editClient');
     Route::put('/update/{id}', 'ClientsController@updateClient');
 });
-
-// Route::get('/', function () {
-//     return view('login');
-// });
 
 // clients routes
 Route::group(['prefix' => 'clients', 'middleware' => 'auth'], function () {
@@ -59,6 +56,7 @@ Route::group(['prefix' => 'cases', 'middleware' => 'auth'], function () {
     Route::get('/editRecord/{id}', 'ProceedingsController@showEdit')->name('cases.editRecord');
     Route::post('/saveRecord', 'ProceedingsController@addPro');
     Route::put('/updateRecord/{id}', 'ProceedingsController@updatePro');
+    Route::get('/viewRecord', 'ProceedingsController@index')->name('cases.viewRecord');
 });
 
 // properties routes
@@ -103,7 +101,7 @@ Route::group(['prefix' => 'appointments', 'middleware' => 'auth'], function () {
 // Notifications
 Route::group(['prefix' => 'notifications', 'middleware' => 'auth'], function () {
     Route::get('/view', 'Notifications@index')->name('notifications.view');
-    Route::post('/mark-as-read/{id}', 'Notifications@markAsRead')->name('notifications.marks-as-read');
+    Route::post('/mark-as-read/{id}', 'Notifications@markAsRead')->name('notifications.mark-as-read');
     Route::post('/mark-all-raed', 'Notifications@markAllAsRead');
     Route::get('/count', 'Notifications@showEdit')->name('notifications.count');
 });

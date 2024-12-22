@@ -17,13 +17,11 @@ class Cases extends Model
         'type',
         'status',
         'startDate',
-        'nextAdjournedDate',
         'assignedCourt',
     ];
 
     protected $casts = [
         'startDate' => 'date',
-        'nextAdjournedDate' => 'date'
     ];
 
     public function lawyer()

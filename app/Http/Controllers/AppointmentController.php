@@ -233,128 +233,138 @@ class AppointmentController extends Controller
         ]);
     }
 
-    public function update(Request $request, Appointments $appointment)
+    public function update(Request $request, Appointments $appointment, $id)
     {
         $currentUser = auth()->user();
 
         // authorize update
         $this->authorize('edit', $appointment);
 
+        $appt = Appointments::findOrFail($id);
+
         Db::beginTransaction();
-        try {
-            $validatedData = $request->validate([
-                'lawyerId' => 'required|exists:users,id',
-                'clientId' => 'nullable|exists:users,id',
-                'availableSlotId' => 'sometimes|exists:available_slots,id',
-                'caseId' => 'nullable|exists:cases,id',
-                'title' => 'sometimes|string|max:255',
-                'description' => 'nullable|string',
-                'type' => 'sometimes|in:consultation,case_meeting,court_appearance',
-                'status' => 'in:scheduled,confirmed,completed,cancelled',
-                'location' => 'nullable|string',
-                'notes' => 'nullable|string'
-            ]);
+        if ($request->isMethod('put')) {
+            try {
+                $validatedData = $request->validate([
+                    'lawyerId' => 'sometimes|exists:users,id',
+                    'clientId' => 'nullable|exists:users,id',
+                    'availableSlotId' => 'sometimes|exists:available_slots,id',
+                    'caseId' => 'nullable|exists:cases,id',
+                    'title' => 'sometimes|string|max:255',
+                    'description' => 'nullable|string',
+                    'type' => 'sometimes|in:consultation,case_meeting,court_appearance',
+                    'status' => 'in:scheduled,confirmed,completed,cancelled',
+                    'location' => 'nullable|string',
+                    'notes' => 'nullable|string'
+                ]);
 
-            // determine if time slot changed
-            // $slotChange = isset(;
-
-            if (
-                isset($validatedData['availableSlotId'])
-                && $validatedData['availableSlotId'] != $appointment->availableSlotId
-            ) {
-                $newSlot = Available_slots::findOrFail($validatedData['availableSlotId']);
-
-                // release old slot
-                $oldSlot = Available_slots::find($appointment->availableSlotId);
-                if ($oldSlot) {
-                    $oldSlot->update(['status' => 'available']);
-                }
-                $conflictingAppointment = Appointments::where('lawyerId', $validatedData['lawyerId'])
-                    ->where(function ($query) use ($newSlot) {
-                        $query->whereBetween('startTime', [$newSlot->startTime, $newSlot->endTime])
-                            ->orWhereBetween('endTime', [$newSlot->startTime, $newSlot->endTime])
-                            ->orWhere(function ($q) use ($newSlot) {
-                                $q->where('startTime', '<=', $newSlot->startTime)
-                                    ->where('endTime', '>=', $newSlot->endTime);
-                            });
-                    })
-                    ->exists();
-
-                if ($conflictingAppointment) {
-                    throw ValidationException::withMessages([
-                        'startTime' => ['This time slot is already booked']
-                    ]);
+                $clientId = null;
+                if ($currentUser->isClient()) {
+                    $clientId = $currentUser->id;
+                } elseif (isset($validatedData['clientId'])) {
+                    $clientId = $validatedData['clientId'];
+                } else {
+                    $clientId = $currentUser->id;
                 }
 
-                $appointment->startTime = $newSlot->startTime;
-                $appointment->endTime = $newSlot->endTime;
-                $newSlot->update(['status' => 'booked']);
+                $this->validateBookingPermissions(
+                    $currentUser,
+                    $validatedData['lawyerId'],
+                    $clientId
+                );
+
+
+                // determine if time slot changed
+                $newSlot = null;
+                if (
+                    isset($validatedData['availableSlotId'])
+                    && $validatedData['availableSlotId'] != $appointment->availableSlotId
+                ) {
+                    $newSlot = Available_slots::findOrFail($validatedData['availableSlotId']);
+
+                    // release old slot
+                    $oldSlot = Available_slots::find($appointment->availableSlotId);
+                    if ($oldSlot) {
+                        $oldSlot->update(['status' => 'available']);
+                    }
+                    $conflictingAppointment = Appointments::where('lawyerId', $validatedData['lawyerId'])
+                        ->where(function ($query) use ($newSlot) {
+                            $query->whereBetween('startTime', [$newSlot->startTime, $newSlot->endTime])
+                                ->orWhereBetween('endTime', [$newSlot->startTime, $newSlot->endTime])
+                                ->orWhere(function ($q) use ($newSlot) {
+                                    $q->where('startTime', '<=', $newSlot->startTime)
+                                        ->where('endTime', '>=', $newSlot->endTime);
+                                });
+                        })
+                        ->exists();
+
+                    if ($conflictingAppointment) {
+                        throw ValidationException::withMessages([
+                            'startTime' => ['This time slot is already booked']
+                        ]);
+                    }
+
+                    // $appointment->startTime = $newSlot->startTime;
+                    // $appointment->endTime = $newSlot->endTime;
+                    $newSlot->update(['status' => 'booked']);
+                }
+
+                // $clientId = $currentUser->isClient() ? $currentUser->id
+                //     :($validatedData['clientId']);
+
+
+
+                $appointmentData = [
+                    'lawyerId' => isset($validatedData['lawyerId']) ? $validatedData['lawyerId'] : $appointment->lawyerId,
+                    'clientId' => $clientId,
+                    'startTime' => isset($newSlot) ? $newSlot->startTime : $appointment->startTime,
+                    'endTime' => isset($newSlot) ? $newSlot->endTime : $appointment->endTime,
+                    'caseId' => $validatedData['caseId'] ?? $appointment->caseId,
+                    'title' => $validatedData['title'] ?? $appointment->title,
+                    'description' => $validatedData['description'] ?? $appointment->description,
+                    'type' => $validatedData['type'] ?? $appointment->type,
+                    'status' => $validatedData['status'] ?? $appointment->status,
+                    'location' => $validatedData['location'] ?? $appointment->location,
+                    'notes' => $validatedData['notes'] ?? $appointment->notes
+                ];
+
+                $appt->update($appointmentData);
+
+                Db::commit();
+
+                $client = User::find($appointment->clientId);
+                $lawyer = User::find($appointment->lawyerId);
+                if ($lawyer && $client) {
+                    // Send the notification
+                    Notification::send([$lawyer, $client], new updatedAppt($appointment));
+                } else {
+                    Log::error('Lawyer or Client not found for appointment ID ' . $appointment->id);
+                }
+
+                // $lawyer = User::find($appointment->lawyerId);
+                // $client = User::find($appointment->clientId);
+
+                // Notification::send([$lawyer, $client], new updatedAppt($appointment));
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Appointment updated successfully',
+                    'appointment' => $appointment
+                ], 201);
+                // return redirect()->route('appointments.view')->with('success', 'Appointment updated successfully');
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Appointment update failed: ' . $e->getMessage());
+
+                return response()->json([
+                    'success' => false,
+                    'errors' => $e->getMessage()
+                ], 422);
+
+                // return redirect()->route('appointments.view')->with('message', 'Appointment update failed');
             }
-
-            $clientId = null;
-            if ($currentUser->isClient()) {
-                $clientId = $currentUser->id;
-            } elseif (isset($validatedData['clientId'])) {
-                $clientId = $validatedData['clientId'];
-            } else {
-                $clientId = $currentUser->id;
-            }
-
-            $this->validateBookingPermissions($currentUser, $validatedData['lawyerId'], $clientId);
-
-            $appointmentData = [
-                'lawyerId' => $validatedData['lawyerId'],
-                'clientId' => $clientId,
-                // 'startTime' => $newSlot->startTime,
-                // 'endTime' => $newSlot->endTime,
-                'caseId' => $validatedData['caseId'] ?? null,
-                'title' => $validatedData['title'],
-                'description' => $validatedData['description'] ?? null,
-                'type' => $validatedData['type'],
-                'status' => 'scheduled',
-                'location' => $validatedData['location'] ?? null,
-                'notes' => $validatedData['notes'] ?? null
-            ];
-
-            $appointment->update($appointmentData);
-            // $newSlot->update(['status' => 'booked']);
-
-            Db::commit();
-
-            $lawyer = User::find($appointment->lawyerId);
-            $client = User::find($appointment->clientId);
-
-            if ($lawyer && $client) {
-                // Send the notification
-                Notification::send([$lawyer, $client], new updatedAppt($appointment));
-            } else {
-                Log::error('Lawyer or Client not found for appointment ID ' . $appointment->id);
-            }
-
-            // $lawyer = User::find($appointment->lawyerId);
-            // $client = User::find($appointment->clientId);
-
-            // Notification::send([$lawyer, $client], new updatedAppt($appointment));
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Appointment updated successfully',
-                'appointment' => $appointment
-            ], 201);
-            // return redirect()->route('appointments.view')->with('success', 'Appointment updated successfully');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Appointment update failed: ' . $e->getMessage());
-
-            return response()->json([
-                'success' => false,
-                'errors' => $e->getMessage()
-            ], 422);
-
-            // return redirect()->route('appointments.view')->with('message', 'Appointment update failed');
         }
-
     }
 
     public function cancel(Appointments $appointment, $id)
@@ -421,6 +431,7 @@ class AppointmentController extends Controller
                 ->whereDate('startTime', $parsedDate->toDateString())
                 ->where('status', 'available')
                 ->where('startTime', '>=', now())
+                ->whereRaw('DAYOFWEEK(startTime) NOT IN (1, 7)')
                 ->get(['id', 'startTime', 'endTime', 'status']);
 
             return response()->json($slots);

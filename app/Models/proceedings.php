@@ -14,6 +14,7 @@ class proceedings extends Model
         'description',
         'requiredDoc',
         'dueDate',
+        'docStatus'
     ];
 
     public function case()

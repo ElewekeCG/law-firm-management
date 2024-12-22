@@ -13,10 +13,6 @@
             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
-                <!-- Counter - Alerts -->
-                {{-- @php
-                    $unreadCount = Auth::user()->unreadNotifications->count();
-                @endphp --}}
                 @if ($unreadNotifications->count() > 0)
                     <span class="badge badge-danger badge-counter">
                         {{ $unreadNotifications->count() > 3 ? '3+' : $unreadNotifications->count() }}
@@ -30,21 +26,25 @@
                     Notifications
                 </h6>
                 @forelse ($unreadNotifications as $notification)
-                    <a class="dropdown-item d-flex align-items-center" href="{{ url('notifications/mark-as-read/'. $notification->id) }}">
-                        <div class="mr-3">
-                            <div class="icon-circle bg-primary">
-                                <i class="{{ $notification->data['icon'] ?? 'fas fa-bell' }} text-white"></i>
+                    <form action="{{ url('notifications/mark-as-read/' . $notification->id) }}" method="POST"
+                        class="d-inline">
+                        @csrf
+                        <button type="submit" class="dropdown-item d-flex align-items-center">
+                            <div class="mr-3">
+                                <div class="icon-circle bg-primary">
+                                    <i class="{{ $notification->data['icon'] ?? 'fas fa-bell' }} text-white"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <div class="small text-gray-500">
-                                {{ $notification->created_at->diffForHumans() }}
+                            <div>
+                                <div class="small text-gray-500">
+                                    {{ $notification->created_at->diffForHumans() }}
+                                </div>
+                                <span class="font-weight-bold">
+                                    {{ $notification->data['message'] }}
+                                </span>
                             </div>
-                            <span class="font-weight-bold">
-                                {{ $notification->data['message'] }}
-                            </span>
-                        </div>
-                    </a>
+                        </button>
+                    </form>
                 @empty
                     <a class="dropdown-item text-center" small text-gray-500>
                         No new notifications

@@ -21,8 +21,9 @@ return new class extends Migration
                   ->on('cases')
                   ->onDelete('cascade');
             $table->text('description');
-            $table->string('requiredDoc');
-            $table->date('dueDate');
+            $table->string('requiredDoc')->nullable();
+            $table->date('dueDate')->nullable();
+            $table->enum('docStatus', ['pending', 'done'])->default('pending');
             $table->timestamps();
         });
     }

@@ -15,11 +15,7 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('clientId');
-            $table->foreign('clientId')
-                  ->references('id')
-                  ->on('clients')
-                  ->onDelete('cascade');
+            $table->foreignId('clientId')->constrained('users');
             $table->string('address');
             $table->integer('rate');
             $table->integer('percentage');

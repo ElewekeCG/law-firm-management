@@ -6,7 +6,7 @@
         <div class="sidebar-brand-icon">
             <i class="fa-solid fa-scale-balanced"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">LFMS</div>
+        <div class="sidebar-brand-text mx-3">LAW HUB</div>
     </a>
 
     <!-- Divider -->
@@ -72,6 +72,21 @@
                 <a class="collapse-item" href="{{ url('cases/view') }}">View Cases</a>
                 <a class="collapse-item" href="{{ url('cases/add') }}">Add new Brief</a>
                 <a class="collapse-item" href="utilities-animation.html">Record of Proceedings</a>
+            </div>
+        </div>
+    </li>
+    <!-- Cases -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRecords"
+            aria-expanded="true" aria-controls="collapseRecords">
+            <i class="fa-solid fa-file"></i>
+            <span>Court Records</span>
+        </a>
+        <div id="collapseRecords" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Manage Records</h6>
+                <a class="collapse-item" href="{{ url('cases/viewRecord') }}">View Records</a>
+                <a class="collapse-item" href="{{ url('cases/addRecord') }}">Add new Record</a>
             </div>
         </div>
     </li>
@@ -147,8 +162,13 @@
     </li>
 
     <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
-    <a href="{{ url('logout') }}">logout</a>
+    <hr class="sidebar-divider d-md-block">
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('logout') }}">
+            Logout
+        </a>
+    </li>
+    {{-- <a href="">logout</a> --}}
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>

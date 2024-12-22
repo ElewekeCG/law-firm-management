@@ -16,11 +16,11 @@
             </div>
         @endif
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="text-primary fw-bold m-0">
-                Properties
+            <h3 class="m-0 font-weight-bold text-primary">
+                Case Records
             </h3>
-            <a href="{{ route('properties.add') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Add Property
+            <a href="{{ route('cases.addRecord') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>New Record
             </a>
         </div>
         <div class="card-body">
@@ -47,7 +47,7 @@
                         </div>
                         <div class="col-sm-12 col-md-6">
                             <div id="dataTable_filter" class="dataTables_filter">
-                                <form action="{{ route('properties.view') }}" method="GET" class=" mb-4">
+                                <form action="{{ route('cases.viewRecord') }}" method="GET" class=" mb-4">
                                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="form-control mr-2">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </form>
@@ -56,40 +56,43 @@
                     </div>
 
                     <!-- Keeps query parameters in pagination links -->
-                    {{ $propertyList->appends(request()->input())->links() }}
+                    {{ $recordsList->appends(request()->input())->links() }}
 
 
-                    @if (!$propertyList->isEmpty())
+                    @if (!$recordsList->isEmpty())
                         <div class="row">
                             <div class="col-sm-12">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Landlord</th>
-                                            <th>Address</th>
-                                            <th>Rate</th>
-                                            <th>Professional Fee</th>
+                                            <th>Case</th>
+                                            <th>Record</th>
+                                            <th>Required Document</th>
+                                            <th>Due Date</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>Landlord</th>
-                                            <th>Address</th>
-                                            <th>Rate</th>
-                                            <th>Professional Fee</th>
+                                            <th>Case</th>
+                                            <th>Record</th>
+                                            <th>Required Document</th>
+                                            <th>Due Date</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        @foreach ($propertyList as $props)
+                                        @foreach ($recordsList as $record)
                                             <tr>
-                                                <td>{{ $props->client->name }}</td>
-                                                <td>{{ $props->address }}</td>
-                                                <td>${{ number_format($props->rate, 2) }}</td>
-                                                <td>{{ $props->percentage }}%</td>
+                                                <td>{{ $record->case->title }}</td>
+                                                <td>{{ $record->description }}</td>
+                                                <td>{{ $record->requiredDoc ?? 'None' }}</td>
+                                                <td>{{ $record->dueDate ?? 'N/A' }}</td>
+                                                <td>{{ $record->docStatus }}</td>
                                                 <td>
-                                                    <a class="me-3" href="{{ url('properties/edit/' . $props->id) }}">
+                                                    <a class="me-3" href="{{ url('cases/editRecord/' . $record->id) }}">
                                                         <img src="{{ url('assets/img/edit.svg') }}" alt="Edit">
                                                     </a>
                                                 </td>
@@ -103,13 +106,13 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-5">
                             <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">
-                                Showing {{ $propertyList->firstItem() }} to {{ $propertyList->lastItem() }} of
-                                {{ $propertyList->total() }} entries
+                                Showing {{ $recordsList->firstItem() }} to {{ $recordsList->lastItem() }} of
+                                {{ $recordsList->total() }} entries
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-7">
                             <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
-                                {{ $propertyList->links() }} <!-- Generates pagination links automatically -->
+                                {{ $recordsList->links() }} <!-- Generates pagination links automatically -->
                             </div>
                         </div>
                     </div>

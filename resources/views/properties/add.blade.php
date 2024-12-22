@@ -33,7 +33,7 @@
                                 <select name="clientId" class="form-control select2" id="clientSelect">
                                     <option value="-1">Select Landlord</option>
                                     @foreach ($clients as $client)
-                                        <option value="{{ $client->id }}">{{ $client->full_name }}</option>
+                                        <option value="{{ $client->id }}">{{ $client->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

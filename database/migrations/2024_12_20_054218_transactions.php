@@ -20,13 +20,12 @@ return new class extends Migration
             $table->enum('type', ['credit', 'debit'])->default('credit');
             $table->enum('subType', ['legalFee', 'rent'],)->nullable(); //only for credit transactions
             $table->unsignedBigInteger('tenantId')->nullable();
-            $table->unsignedBigInteger('clientId')->nullable();
+            $table->foreignId('clientId')->nullable()->constrained('users');
             $table->unsignedBigInteger('propertyId')->nullable();
             $table->text('narration');
             $table->timestamps();
 
             $table->foreign('tenantId')->references('id')->on('tenants')->onDelete('cascade');
-            $table->foreign('clientId')->references('id')->on('clients')->onDelete('cascade');
             $table->foreign('propertyId')->references('id')->on('properties')->onDelete('cascade');
 
         });

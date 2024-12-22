@@ -88,9 +88,9 @@
                                 <div class="form-group">
                                     <label>Property</label>
                                     <select name="propertyId" class="form-control select2" id="clientSelect">
-                                        <option value="-1">Select Property</option>
                                         @foreach ($props as $prop)
-                                            <option value="{{ $prop->id }}" {{ $prop->propertyId == $prop->id ? 'selected' : '' }}>
+                                            <option value="{{ $prop->id }}"
+                                                {{ $tenant->propertyId == $prop->id ? 'selected' : '' }}>
                                                 {{ $prop->address }}
                                             </option>
                                         @endforeach

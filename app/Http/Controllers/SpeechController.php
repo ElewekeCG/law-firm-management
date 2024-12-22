@@ -50,16 +50,11 @@ class SpeechController extends Controller
             // Additional configuration for better recognition
             $config->setModel('default');
             $config->setUseEnhanced(true);
-            
+
             $audio = new RecognitionAudio();
             $audio->setContent($audioContent);
 
             $response = $speechClient->recognize($config, $audio);
-
-            // Debug: Log API response
-            // \Log::info('Speech Recognition Response', [
-            //     'response_count' => $response->count()
-            // ]);
 
             foreach ($response->getResults() as $result) {
                 $alternative = $result->getAlternatives()[0];
