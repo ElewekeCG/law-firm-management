@@ -162,6 +162,10 @@
                 if (data.success) {
                     // Show success message
                     alert(data.message);
+                    if (data.redirect) {
+                        window.location.assign(data.redirect);
+                        console.log("Redirecting to:", data.redirect);
+                    }
 
                 } else {
                     // Handle validation errors

@@ -34,7 +34,7 @@ class CasePolicy
         return in_array($user->role, ['lawyer', 'clerk']);
     }
 
-    public function update(User $user, Cases $cases)
+    public function update(User $user)
     {
         return in_array($user->role, ['lawyer', 'clerk']);
     }

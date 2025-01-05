@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class transactions extends Model
+class Transactions extends Model
 {
     use HasFactory;
 
@@ -34,4 +34,5 @@ class transactions extends Model
     {
         return $this->belongsTo(properties::class, 'propertyId');
     }
+
 }

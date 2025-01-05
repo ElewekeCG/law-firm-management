@@ -156,7 +156,7 @@
 
     <!-- Reports -->
     <li class="nav-item">
-        <a class="nav-link" href="tables.html">
+        <a class="nav-link" href="{{ url('reports/generate') }}">
             <i class="fas fa-fw fa-table"></i>
             <span>Reports</span></a>
     </li>

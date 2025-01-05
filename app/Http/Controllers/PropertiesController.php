@@ -45,10 +45,10 @@ class PropertiesController extends Controller
 
         if ($request->isMethod('put')) {
             $validatedData = $request->validate([
-                'clientId' => 'required|exists:users,id',
-                'address' => 'required|string|max:100',
-                'rate' => 'required|integer|min:1000',
-                'percentage' => 'required|integer|min:0|max:50',
+                'clientId' => 'sometimes|exists:users,id',
+                'address' => 'sometimes|string|max:100',
+                'rate' => 'sometimes|integer|min:1000',
+                'percentage' => 'sometimes|integer|min:0|max:50',
             ]);
 
             // update therequired field

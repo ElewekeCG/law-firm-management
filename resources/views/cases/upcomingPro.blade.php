@@ -38,19 +38,19 @@
                                                 <td>{{ $docs->case->title }}</td>
                                                 <td>{{ $docs->requiredDoc }}</td>
                                                 <td>
-                                                    <a class="me-3" href="{{ url('appointments/show/' . $appt->id) }}" title="View">
+                                                    {{-- <a class="me-3" href="{{ url('appointments/show/' . $docs->id) }}" title="View">
                                                         <i class="fas fa-eye"></i>
-                                                    </a>
-                                                    <a class="me-3" href="{{ url('appointments/edit/' . $appt->id) }}" title="Edit">
+                                                    </a> --}}
+                                                    <a class="me-3" href="{{ url('cases/editRecord/' . $docs->id) }}" title="Edit">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form action="{{ url('appointments/cancel/' . $appt->id) }}" method="POST" style="display:inline;">
+                                                    {{-- <form action="{{ url('appointments/cancel/' . $docs->id) }}" method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('PUT')
                                                         <button type="submit" class="btn btn-link me-3 p-0" title="Cancel" style="border: none; background: none;">
                                                             <i class="fas fa-times text-danger"></i>
                                                         </button>
-                                                    </form>
+                                                    </form> --}}
                                                 </td>
                                             </tr>
                                         @endforeach

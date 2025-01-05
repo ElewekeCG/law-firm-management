@@ -91,7 +91,7 @@
                                     <tbody>
                                         @forelse ($transList as $trans)
                                             <tr>
-                                                <td>${{ number_format($trans->amount, 0) }}</td>
+                                                <td>NGN{{ number_format($trans->amount, 0) }}</td>
                                                 <td>{{ $trans->paymentDate }}</td>
                                                 <td>{{ $trans->type }}</td>
                                                 <td>{{ $trans->subType ?? '-' }}</td>

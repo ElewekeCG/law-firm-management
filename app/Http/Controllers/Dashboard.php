@@ -43,7 +43,7 @@ class Dashboard extends Controller
         ->count();
 
         $pendingDocs = proceedings::where(function($query) use ($user){
-            if ($user->isLawyer() || $user->isClerk) {
+            if ($user->isLawyer() || $user->isClerk()) {
                 $query;
             }
         })
@@ -118,7 +118,7 @@ class Dashboard extends Controller
         $now = Carbon::now();
 
         $pendingDocs = proceedings::where(function($query) use ($user){
-            if ($user->isLawyer() || $user->isClerk) {
+            if ($user->isLawyer() || $user->isClerk()) {
                 $query;
             }
         })

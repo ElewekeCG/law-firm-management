@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Factories;
-use App\Models\clients;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +16,9 @@ class PropertiesFactory extends Factory
      */
     public function definition()
     {
+        // Fetch or create a client
         return [
-            'clientId' => clients::factory(),
+            'clientId' => User::query()->where('role', 'client')->inRandomOrder()->value('id'),
             'address' => fake()->address(),
             'rate' => $this->faker->numberBetween(1000, 30000),
             'percentage' => $this->faker->numberBetween(5, 20),

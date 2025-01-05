@@ -145,11 +145,14 @@ class AppointmentController extends Controller
 
             Notification::send([$lawyer, $client], new newAppointment($appointment));
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Appointment scheduled successfully',
-                'appointment' => $appointment
-            ], 201);
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Appointment scheduled successfully',
+                    'redirect' => route('appointments.view')
+                ], 201);
+            }
+            return redirect()->route('appointments.view')->with('success', 'Appointment scheduled successfully');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -216,7 +219,7 @@ class AppointmentController extends Controller
         // authorize edit access
         $this->authorize('edit', $appointment);
 
-        $appt = $appointment::with('lawyer', 'client', 'case')->findOrFail($id);
+        $appt = Appointments::with('lawyer', 'client', 'case')->findOrFail($id);
         $lawyers = User::lawyers()->get();
         $clients = User::clients()->get();
         $cases = Cases::all();
@@ -228,8 +231,6 @@ class AppointmentController extends Controller
             'cases' => $cases,
             // 'getAvailableSlot' => $getAvailableSlot,
             'availableSlot' => $appointment->getAvailableSlotAttribute()
-
-
         ]);
     }
 
@@ -245,10 +246,11 @@ class AppointmentController extends Controller
         Db::beginTransaction();
         if ($request->isMethod('put')) {
             try {
+                Log::info('Incoming request data:', $request->all());
                 $validatedData = $request->validate([
-                    'lawyerId' => 'sometimes|exists:users,id',
+                    'lawyerId' => 'required|exists:users,id',
                     'clientId' => 'nullable|exists:users,id',
-                    'availableSlotId' => 'sometimes|exists:available_slots,id',
+                    'availableSlotId' => 'required|exists:available_slots,id',
                     'caseId' => 'nullable|exists:cases,id',
                     'title' => 'sometimes|string|max:255',
                     'description' => 'nullable|string',
@@ -323,7 +325,7 @@ class AppointmentController extends Controller
                     'title' => $validatedData['title'] ?? $appointment->title,
                     'description' => $validatedData['description'] ?? $appointment->description,
                     'type' => $validatedData['type'] ?? $appointment->type,
-                    'status' => $validatedData['status'] ?? $appointment->status,
+                    'status' => isset($validatedData['status']) ? ($validatedData['status']) : $appointment->status,
                     'location' => $validatedData['location'] ?? $appointment->location,
                     'notes' => $validatedData['notes'] ?? $appointment->notes
                 ];
@@ -341,17 +343,15 @@ class AppointmentController extends Controller
                     Log::error('Lawyer or Client not found for appointment ID ' . $appointment->id);
                 }
 
-                // $lawyer = User::find($appointment->lawyerId);
-                // $client = User::find($appointment->clientId);
-
-                // Notification::send([$lawyer, $client], new updatedAppt($appointment));
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Appointment updated successfully',
-                    'appointment' => $appointment
-                ], 201);
-                // return redirect()->route('appointments.view')->with('success', 'Appointment updated successfully');
+                if ($request->wantsJson()){
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Appointment updated successfully',
+                        'redirect' => route('appointments.view')
+                        // 'appointment' => $appointmentData
+                    ], 201);
+                }
+                return redirect()->route('appointments.view')->with('success', 'Appointment updated successfully');
 
             } catch (\Exception $e) {
                 DB::rollBack();
@@ -400,11 +400,6 @@ class AppointmentController extends Controller
             } else {
                 Log::error('Lawyer or Client not found for appointment ID ' . $appointment->id);
             }
-
-            // $lawyer = User::find($appointment->lawyerId);
-            // $client = User::find($appointment->clientId);
-
-            // Notification::send([$lawyer, $client], new cancelledAppt($appointment));
 
             return redirect()->route('appointments.view')->with('success', 'Appointment canceled');
         } catch (\exception $e) {

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Cases;
 use App\Policies\CasePolicy;
+use App\Policies\ReportsPolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -20,6 +21,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Appointments::class => AppointmentPolicy::class,
         Cases::class => CasePolicy::class,
+        Reports::class => ReportsPolicy::class,
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
     ];
 

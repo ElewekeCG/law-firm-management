@@ -16,9 +16,9 @@
             <h1 class="welcome-title h3 mb-0 text-primary">
                 Welcome back, {{ $user->name }}
             </h1>
-            <a href="#" class="btn btn-primary btn-sm d-flex align-items-center shadow">
+            {{-- <a href="#" class="btn btn-primary btn-sm d-flex align-items-center shadow">
                 <i class="fas fa-download fa-sm text-white me-2"></i> Generate Report
-            </a>
+            </a> --}}
         </div>
 
         <!-- Content Row -->

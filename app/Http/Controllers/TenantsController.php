@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\tenants;
-use App\Models\properties;
+use App\Models\Tenants;
+use App\Models\Properties;
 use Illuminate\Validation\Rule;
 
 
@@ -19,7 +19,7 @@ class TenantsController extends Controller
         $searchTerm = $request->input('search', '');
 
         // filter by search term if provided
-        $tenants = tenants::where('firstName', 'like', '%' . $searchTerm . '%')
+        $tenants = Tenants::where('firstName', 'like', '%' . $searchTerm . '%')
             ->orWhere('lastName', 'like', '%' . $searchTerm . '%')
             ->orWhereHas('property', function($query) use ($searchTerm) {
                 $query->where('address', 'like', '%' . $searchTerm . '%');
@@ -53,25 +53,17 @@ class TenantsController extends Controller
 
         if ($request->isMethod('put')) {
             $validatedData = $request->validate([
-                'firstName' => 'required|string|max:50',
-                'lastName' => 'required|string|max:50',
-                'email' => 'required|string|max:50',
-                'paymentType' => ['required', Rule::in(['yearly', 'monthly'])],
-                'accomType' => 'required|string|max:20',
-                'rentAmt' => 'required|integer|min:1000',
-                'propertyId' => 'required|exists:properties,id',
+                'firstName' => 'sometimes|string|max:50',
+                'lastName' => 'sometimes|string|max:50',
+                'email' => 'sometimes|string|max:50',
+                'paymentType' => ['sometimes', Rule::in(['yearly', 'monthly'])],
+                'accomType' => 'sometimes|string|max:20',
+                'rentAmt' => 'sometimes|integer|min:1000',
+                'propertyId' => 'sometimes|exists:properties,id',
             ]);
 
             // update the required field
-            $tenant->update([
-                'firstName' => $validatedData['firstName'],
-                'lastName' => $validatedData['lastName'],
-                'email' =>$validatedData['email'],
-                'paymentType' =>$validatedData['paymentType'],
-                'accomType' =>$validatedData['accomType'],
-                'rentAmt' =>$validatedData['rentAmt'],
-                'propertyId' =>$validatedData['propertyId'],
-            ]);
+            $tenant->update($validatedData);
 
             // Redirect to the view cases page
             return redirect()->route('tenants.view')

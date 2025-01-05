@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\properties;
+use App\Models\Properties;
 use App\Models\User;
-use App\Models\tenants;
-use App\Models\transactions;
+use App\Models\Tenants;
+use App\Models\Transactions;
 
 class Trans extends Controller
 {
@@ -19,7 +19,7 @@ class Trans extends Controller
         $searchTerm = $request->input('search', '');
 
         // filter by search term if provided
-        $transList = transactions::query()
+        $transList = Transactions::query()
         ->with(['tenant', 'client', 'property']) // Eager load relationships
         ->when($searchTerm, function ($query, $searchTerm) {
             $query->whereHas('tenant', function ($q) use ($searchTerm) {
@@ -42,18 +42,18 @@ class Trans extends Controller
 
     public function showAdd()
     {
-        $properties = properties::all();
+        $properties = Properties::all();
         $clients = User::clients()->get();
-        $tenants = tenants::all();
+        $tenants = Tenants::all();
         return view('transactions.add', compact('properties', 'clients', 'tenants'));
     }
 
     public function showEdit($id)
     {
-        $trans = transactions::find($id);
-        $properties = properties::all();
+        $trans = Transactions::find($id);
+        $properties = Properties::all();
         $clients = User::clients()->get();
-        $tenants = tenants::all();
+        $tenants = Tenants::all();
         return view('transactions.edit', [
             'properties' => $properties,
             'clients' => $clients,
@@ -65,15 +65,15 @@ class Trans extends Controller
     public function updateTrans(Request $request, $id)
     {
         // find the transaction to be updated
-        $trans = transactions::findOrFail($id);
+        $trans = Transactions::findOrFail($id);
 
         if ($request->isMethod('put')) {
             $rules = [
-                'amount' => 'required|integer|min:1',
-                'paymentDate' => 'required|date',
-                'type' => 'required|in:credit,debit',
+                'amount' => 'sometimes|integer|min:1',
+                'paymentDate' => 'sometimes|date',
+                'type' => 'sometimes|in:credit,debit',
                 'subType' => 'nullable|required_if:type,credit|in:legalFee,rent',
-                'narration' => 'required|string|max:1024',
+                'narration' => 'sometimes|string|max:1024',
             ];
 
             if($request->input('subType') === 'rent') {
@@ -127,7 +127,7 @@ class Trans extends Controller
                 return !is_null($value);
             });
 
-            transactions::create($data);
+            Transactions::create($data);
 
             return redirect()->back()->with('message', 'Transaction added successfully');
         }

@@ -86,7 +86,7 @@
                                             <tr>
                                                 <td>{{ $props->client->name }}</td>
                                                 <td>{{ $props->address }}</td>
-                                                <td>${{ number_format($props->rate, 2) }}</td>
+                                                <td>NGN{{ number_format($props->rate, 0) }}</td>
                                                 <td>{{ $props->percentage }}%</td>
                                                 <td>
                                                     <a class="me-3" href="{{ url('properties/edit/' . $props->id) }}">

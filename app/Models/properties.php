@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class properties extends Model
+class Properties extends Model
 {
     use HasFactory;
 
@@ -19,5 +19,10 @@ class properties extends Model
     public function client()
     {
         return $this->belongsTo(User::class, 'clientId');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(transactions::class);
     }
 }

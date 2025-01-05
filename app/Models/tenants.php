@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class tenants extends Model
+class Tenants extends Model
 {
     use HasFactory;
 
@@ -28,5 +28,5 @@ class tenants extends Model
     {
         return "{$this->firstName} {$this->lastName}";
     }
-    
+
 }

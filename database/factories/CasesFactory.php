@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\clients;
+use App\Models\User;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,14 +18,18 @@ class CasesFactory extends Factory
      */
     public function definition()
     {
+        $lawyer = User::query()->where('role', 'lawyer')->inRandomOrder()->first();
+
+        // Fetch or create a client only if the type requires it
+        $client = User::query()->where('role', 'client')->inRandomOrder()->first();
         return [
-            'title' => fake()->title(),
-            'type' => fake()->type(),
-            'status' => fake()->status(),
-            'clientId' => clients::factory(),
-            'suitNumber' => strtoupper($this->faker->unique()->lexify('?????-?????')), // Generates a random suiy number like 'ABCD-EFGHI'
+            'suitNumber' => strtoupper($this->faker->unique()->lexify('?????-?????')), // Generates a random suit number like 'ABCD-EFGHI'
+            'clientId' => $client->id,
+            'lawyerId' => $lawyer->id,
+            'title' => fake()->sentence(2),
+            'type' => $this->faker->randomElement(['criminal', 'civil', 'property']),
+            'status' => fake()->sentence(2),
             'startDate' => $this->faker->date(),
-            'nextAdjournedDate' => $this->faker->dateTime(),
             'assignedCourt' => fake()->sentence(),
         ];
     }

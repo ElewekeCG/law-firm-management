@@ -17,7 +17,7 @@ use App\Http\Controllers\CalendarController;
 */
 
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
-    Route::get('/', [Dashboard::class, 'showDashboard']);
+    Route::get('/', [Dashboard::class, 'showDashboard'])->name('dashboard');
     Route::get('/upcoming', 'Dashboard@getAppointments')->name('dashboard.upcoming');
     Route::get('/upcomingCases', 'Dashboard@getUpcomingCases')->name('dashboard.upcomingCases');
     Route::get('/pendingDocs', 'Dashboard@getPendingDocs')->name('dashboard.pendingDocs');
@@ -47,15 +47,15 @@ Route::group(['prefix' => 'clients', 'middleware' => 'auth'], function () {
 Route::group(['prefix' => 'cases', 'middleware' => 'auth'], function () {
     Route::get('/view', 'CaseController@index')->name('cases.allCases');
     Route::get('/add', 'CaseController@showAddCase')->name('cases.addCase');
-    Route::post('/addCase', 'CaseController@addCase');
+    Route::post('/addCase', 'CaseController@addCase')->name('cases.add');
     Route::get('/edit/{id}', 'CaseController@showEditCase')->name('cases.edit');
-    Route::put('/update/{id}', 'CaseController@updateCase');
+    Route::put('/update/{id}', 'CaseController@updateCase')->name('cases.update');
 
     // Record of Proceedings
     Route::get('/addRecord', 'ProceedingsController@showAdd')->name('cases.addRecord');
     Route::get('/editRecord/{id}', 'ProceedingsController@showEdit')->name('cases.editRecord');
     Route::post('/saveRecord', 'ProceedingsController@addPro');
-    Route::put('/updateRecord/{id}', 'ProceedingsController@updatePro');
+    Route::put('/updateRecord/{id}', 'ProceedingsController@updatePro')->name('cases.updateRecord');
     Route::get('/viewRecord', 'ProceedingsController@index')->name('cases.viewRecord');
 });
 
@@ -65,7 +65,7 @@ Route::group(['prefix' => 'properties', 'middleware' => 'auth'], function () {
     Route::get('/add', 'PropertiesController@showAddProperty')->name('properties.add');
     Route::post('/addProp', 'PropertiesController@addProp');
     Route::get('/edit/{id}', 'PropertiesController@showEditProperty')->name('properties.edit');
-    Route::put('/update/{id}', 'PropertiesController@updateProp');
+    Route::put('/update/{id}', 'PropertiesController@updateProp')->name('properties.update');
 });
 
 // tenants routes
@@ -74,7 +74,7 @@ Route::group(['prefix' => 'tenants', 'middleware' => 'auth'], function () {
     Route::get('/add', 'TenantsController@showAdd')->name('tenants.add');
     Route::post('/addTenant', 'TenantsController@addTenant');
     Route::get('/edit/{id}', 'TenantsController@showEdit')->name('tenants.edit');
-    Route::put('/update/{id}', 'TenantsController@update');
+    Route::put('/update/{id}', 'TenantsController@update')->name('tenants.update');
 });
 
 // transactions route
@@ -83,7 +83,7 @@ Route::group(['prefix' => 'transactions', 'middleware' => 'auth'], function () {
     Route::get('/add', 'Trans@showAdd')->name('transactions.add');
     Route::post('/create', 'Trans@addTrans');
     Route::get('/edit/{id}', 'Trans@showEdit')->name('transactions.edit');
-    Route::put('/update/{id}', 'Trans@updateTrans');
+    Route::put('/update/{id}', 'Trans@updateTrans')->name('transactions.update');
 });
 
 // Appointments
@@ -103,7 +103,14 @@ Route::group(['prefix' => 'notifications', 'middleware' => 'auth'], function () 
     Route::get('/view', 'Notifications@index')->name('notifications.view');
     Route::post('/mark-as-read/{id}', 'Notifications@markAsRead')->name('notifications.mark-as-read');
     Route::post('/mark-all-raed', 'Notifications@markAllAsRead');
-    Route::get('/count', 'Notifications@showEdit')->name('notifications.count');
+    Route::get('/count', 'Notifications@getUnreadCount')->name('notifications.count');
+});
+
+// reports
+Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
+    Route::get('/f-generate', 'ReportsController@generateFirmReport')->name('reports.firm');
+    Route::get('/p-generate', 'ReportsController@generatePropertyReport')->name('reports.property');
+    Route::get('/generate', 'ReportsController@showGenerateReport')->name('reports.generate');
 });
 
 require __DIR__ . '/auth.php';

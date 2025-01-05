@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Factories;
-use App\Models\properties;
+use App\Models\Properties;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,10 +20,10 @@ class TenantsFactory extends Factory
             'firstName' => fake()->firstName(),
             'lastName' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
-            'paymentType' => fake()->sentence(),
-            'accomType' => fake()->sentence(),
+            'paymentType' => $this->faker->randomElement(['yearly', 'monthly']),
+            'accomType' => fake()->sentence(2),
             'rentAmt' => $this->faker->numberBetween(100000, 1000000),
-            'propertyId' => properties::factory(),
+            'propertyId' => Properties::query()->inRandomOrder()->first()
         ];
     }
 }

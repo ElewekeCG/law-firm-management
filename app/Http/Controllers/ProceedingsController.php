@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
-use App\Models\cases;
-use App\Models\proceedings;
+use App\Models\Cases;
+use App\Models\Proceedings;
 
 use Illuminate\Http\Request;
 
@@ -14,7 +14,7 @@ class ProceedingsController extends Controller
     $user = auth()->user();
 
     // Start with a base query that includes the case relationship
-    $records = proceedings::with('case');
+    $records = Proceedings::with('case');
 
     if ($user->role === 'lawyer' || $user->role === 'clerk') {
         // Lawyers and clerks can view all records
@@ -46,14 +46,14 @@ class ProceedingsController extends Controller
 
     public function showAdd()
     {
-        $cases = cases::all();
+        $cases = Cases::all();
         return view('cases.proceedings', compact('cases'));
     }
 
     public function showEdit($id)
     {
-        $pro = proceedings::find($id);
-        $cases = cases::all();
+        $pro = Proceedings::find($id);
+        $cases = Cases::all();
         return view('cases.editPro', [
             'pro' => $pro,
             'cases' => $cases
@@ -63,7 +63,7 @@ class ProceedingsController extends Controller
     public function updatePro(Request $request, $id)
     {
         // find the case to be updated
-        $pro = proceedings::findOrFail($id);
+        $pro = Proceedings::findOrFail($id);
 
         if ($request->isMethod('put')) {
             $validatedData = $request->validate([
@@ -94,9 +94,9 @@ class ProceedingsController extends Controller
                 'docStatus' => 'pending'
             ]);
 
-            proceedings::create($validatedData);
+            Proceedings::create($validatedData);
 
-            return redirect()->back()->with('message', 'Record added successfully');
+            return redirect()->route('cases.viewRecord')->with('message', 'Record added successfully');
         }
     }
 }
