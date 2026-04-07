@@ -22,26 +22,26 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Firm Management
-    </div>
-
-    <!-- clients-->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClients"
-            aria-expanded="true" aria-controls="collapseClients">
-            <i class="fa-solid fa-users"></i>
-            <span>Clients</span>
-        </a>
-        <div id="collapseClients" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Manage Clients</h6>
-                <a class="collapse-item" href="{{ url('clients/view') }}">View Clients</a>
-                <a class="collapse-item" href="{{ url('clients/add') }}">Add new Client</a>
-            </div>
+    @if (auth()->user()->role !== 'client')
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Firm Management
         </div>
-    </li>
+        <!-- clients-->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClients"
+                aria-expanded="true" aria-controls="collapseClients">
+                <i class="fa-solid fa-users"></i>
+                <span>Clients</span>
+            </a>
+            <div id="collapseClients" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Clients</h6>
+                    <a class="collapse-item" href="{{ url('clients/view') }}">View Clients</a>
+                </div>
+            </div>
+        </li>
+    @endif
 
     {{-- appointments --}}
     <li class="nav-item">
@@ -53,7 +53,11 @@
         <div id="collapseSch" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Appointments</h6>
-                <a class="collapse-item" href="{{ url('appointments/view') }}">Manage Appointments</a>
+                @if (auth()->user()->role !== 'client')
+                    <a class="collapse-item" href="{{ url('appointments/view') }}">Manage Appointments</a>
+                @else
+                <a class="collapse-item" href="{{ url('appointments/view') }}">View Appointments</a>
+                @endif
                 <a class="collapse-item" href="{{ url('appointments/create') }}">Add Appointment</a>
             </div>
         </div>
@@ -70,96 +74,126 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Cases</h6>
                 <a class="collapse-item" href="{{ url('cases/view') }}">View Cases</a>
+                @if (auth()->user()->role !== 'client')
                 <a class="collapse-item" href="{{ url('cases/add') }}">Add new Brief</a>
-                <a class="collapse-item" href="utilities-animation.html">Record of Proceedings</a>
+                @endif
             </div>
         </div>
     </li>
-    <!-- Cases -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRecords"
-            aria-expanded="true" aria-controls="collapseRecords">
-            <i class="fa-solid fa-file"></i>
-            <span>Court Records</span>
-        </a>
-        <div id="collapseRecords" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Manage Records</h6>
-                <a class="collapse-item" href="{{ url('cases/viewRecord') }}">View Records</a>
-                <a class="collapse-item" href="{{ url('cases/addRecord') }}">Add new Record</a>
+
+    @if (auth()->user()->role !== 'client')
+        <!-- Records -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRecords"
+                aria-expanded="true" aria-controls="collapseRecords">
+                <i class="fa-solid fa-file"></i>
+                <span>Court Records</span>
+            </a>
+            <div id="collapseRecords" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Manage Records</h6>
+                    <a class="collapse-item" href="{{ url('cases/viewRecord') }}">View Records</a>
+                    <a class="collapse-item" href="{{ url('cases/addRecord') }}">Add new Record</a>
+                </div>
             </div>
-        </div>
-    </li>
+        </li>
+    @else
+        <!-- Records -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRecords"
+                aria-expanded="true" aria-controls="collapseRecords">
+                <i class="fa-solid fa-file"></i>
+                <span>Court Records</span>
+            </a>
+            <div id="collapseRecords" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">View Records</h6>
+                    <a class="collapse-item" href="{{ url('cases/viewRecord') }}">View Records</a>
+                </div>
+            </div>
+        </li>
+    @endif
 
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Property Management
-    </div>
-
-    <!-- properties -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProps"
-            aria-expanded="true" aria-controls="collapseProps">
-            <i class="fa-solid fa-building"></i>
-            <span>Properties</span>
-        </a>
-        <div id="collapseProps" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ url('properties/view') }}">View Properties</a>
-                <a class="collapse-item" href="{{ url('properties/add') }}">Add a new Property</a>
-            </div>
+    @if (auth()->user()->role !== 'client')
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Property Management
         </div>
-    </li>
 
-    {{-- tenants --}}
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTenants"
-            aria-expanded="true" aria-controls="collapseTenants">
-            <i class="fa-solid fa-users"></i>
-            <span>Tenants</span>
-        </a>
-        <div id="collapseTenants" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Manage Tenants</h6>
-                <a class="collapse-item" href="{{ url('tenants/view') }}">View Tenants</a>
-                <a class="collapse-item" href="{{ url('tenants/add') }}">Add a new Tenant</a>
+        <!-- properties -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProps"
+                aria-expanded="true" aria-controls="collapseProps">
+                <i class="fa-solid fa-building"></i>
+                <span>Properties</span>
+            </a>
+            <div id="collapseProps" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="{{ url('properties/view') }}">View Properties</a>
+                    <a class="collapse-item" href="{{ url('properties/add') }}">Add a new Property</a>
+                </div>
             </div>
-        </div>
-    </li>
+        </li>
 
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Extras
-    </div>
-
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTrans"
-            aria-expanded="true" aria-controls="collapseTrans">
-            <i class="fa-solid fa-coins"></i>
-            <span>Transactions</span>
-        </a>
-        <div id="collapseTrans" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <div class="collapse-divider"></div>
-                <h6 class="collapse-header">Transactions</h6>
-                <a class="collapse-item" href="{{ url('transactions/add') }}">Add Transaction</a>
-                <a class="collapse-item" href="{{ url('transactions/view') }}">Manage Transactions</a>
+        {{-- tenants --}}
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTenants"
+                aria-expanded="true" aria-controls="collapseTenants">
+                <i class="fa-solid fa-users"></i>
+                <span>Tenants</span>
+            </a>
+            <div id="collapseTenants" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Manage Tenants</h6>
+                    <a class="collapse-item" href="{{ url('tenants/view') }}">View Tenants</a>
+                    <a class="collapse-item" href="{{ url('tenants/add') }}">Add a new Tenant</a>
+                </div>
             </div>
-        </div>
-    </li>
+        </li>
 
-    <!-- Reports -->
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('reports/generate') }}">
-            <i class="fas fa-fw fa-table"></i>
-            <span>Reports</span></a>
-    </li>
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Extras
+        </div>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTrans"
+                aria-expanded="true" aria-controls="collapseTrans">
+                <i class="fa-solid fa-coins"></i>
+                <span>Transactions</span>
+            </a>
+            <div id="collapseTrans" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <div class="collapse-divider"></div>
+                    <h6 class="collapse-header">Transactions</h6>
+                    <a class="collapse-item" href="{{ url('transactions/add') }}">Add Transaction</a>
+                    <a class="collapse-item" href="{{ url('transactions/view') }}">Manage Transactions</a>
+                </div>
+            </div>
+        </li>
+    @endif
+
+    @if (auth()->user()->role !== 'client')
+        <!-- Reports -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('reports/generate') }}">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Reports</span></a>
+        </li>
+    @else
+        <!-- Reports -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('reports/viewForm') }}">
+                <i class="fas fa-fw fa-table"></i>
+                <span>View Reports</span></a>
+        </li>
+    @endif
 
     <!-- Divider -->
     <hr class="sidebar-divider d-md-block">

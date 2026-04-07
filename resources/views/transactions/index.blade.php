@@ -49,7 +49,7 @@
                             <div id="dataTable_filter" class="dataTables_filter">
                                 <form action="{{ route('transactions.view') }}" method="GET" class=" mb-4">
                                     <input type="text" name="search" value="{{ request('search') }}"
-                                        placeholder="enter name, date or address" class="form-control mr-2">
+                                        placeholder="search name, date or address" class="form-control mr-2">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </form>
                             </div>
@@ -91,7 +91,7 @@
                                     <tbody>
                                         @forelse ($transList as $trans)
                                             <tr>
-                                                <td>NGN{{ number_format($trans->amount, 0) }}</td>
+                                                <td>&#8358;{{ number_format($trans->amount, 0) }}</td>
                                                 <td>{{ $trans->paymentDate }}</td>
                                                 <td>{{ $trans->type }}</td>
                                                 <td>{{ $trans->subType ?? '-' }}</td>

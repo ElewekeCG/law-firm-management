@@ -36,11 +36,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 
 // clients routes
 Route::group(['prefix' => 'clients', 'middleware' => 'auth'], function () {
-    Route::get('/view', 'ClientsController@showClientsList')->name('clients.clientList');
-    Route::get('/add', 'ClientsController@showAddClient')->name('clients.addClient');
-    Route::post('/addClient', 'ClientsController@addClient');
-    Route::get('/edit/{id}', 'ClientsController@showEditClient')->name('clients.editClient');
-    Route::put('/update/{id}', 'ClientsController@updateClient');
+    Route::get('/view', 'ClientsController@index')->name('clients.view');
 });
 
 // cases and proceedings routes
@@ -111,6 +107,9 @@ Route::group(['prefix' => 'reports', 'middleware' => 'auth'], function () {
     Route::get('/f-generate', 'ReportsController@generateFirmReport')->name('reports.firm');
     Route::get('/p-generate', 'ReportsController@generatePropertyReport')->name('reports.property');
     Route::get('/generate', 'ReportsController@showGenerateReport')->name('reports.generate');
+    Route::get('/view', 'ReportsController@viewPropReport')->name('reports.view');
+    Route::get('/viewForm', 'ReportsController@showViewForm')->name('reports.viewForm');
+    Route::get('/download', 'ReportsController@downloadReport')->name('reports.download');
 });
 
 require __DIR__ . '/auth.php';

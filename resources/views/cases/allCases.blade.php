@@ -48,7 +48,7 @@
                         <div class="col-sm-12 col-md-6">
                             <div id="dataTable_filter" class="dataTables_filter">
                                 <form action="{{ route('cases.allCases') }}" method="GET" class=" mb-4">
-                                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="form-control mr-2">
+                                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by title..." class="form-control mr-2">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </form>
                             </div>
@@ -73,7 +73,9 @@
                                             <th>Status</th>
                                             <th>StartDate</th>
                                             <th>Court</th>
-                                            <th>Action</th>
+                                            @if (auth()->user()->role !== 'client')
+                                                <th>Action</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -86,7 +88,9 @@
                                             <th>Status</th>
                                             <th>Start Date</th>
                                             <th>Court</th>
-                                            <th>Action</th>
+                                            @if (auth()->user()->role !== 'client')
+                                                <th>Action</th>
+                                            @endif
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -100,11 +104,13 @@
                                                 <td>{{ $case->status }}</td>
                                                 <td>{{ $case->startDate }}</td>
                                                 <td>{{ $case->assignedCourt }}</td>
-                                                <td>
-                                                    <a class="me-3" href="{{ url('cases/edit/' . $case->id) }}">
-                                                        <img src="{{ url('assets/img/edit.svg') }}" alt="Edit">
-                                                    </a>
-                                                </td>
+                                                @if (auth()->user()->role !== 'client')
+                                                    <td>
+                                                        <a class="me-3" href="{{ url('cases/edit/' . $case->id) }}">
+                                                            <img src="{{ url('assets/img/edit.svg') }}" alt="Edit">
+                                                        </a>
+                                                    </td>
+                                                @endif
                                             </tr>
                                         @endforeach
                                     </tbody>

@@ -25,15 +25,21 @@ class AppointmentController extends Controller
         if ($user->isLawyer()) {
             $appointments = Appointments::where('lawyerId', $user->id)
                 ->with('client')
+                ->where('status', '!=', 'cancelled')
+                ->where('startTime', '>=', now())
                 ->orderBy('startTime', 'desc')
                 ->paginate(10);
         } elseif ($user->isClient()) {
             $appointments = Appointments::where('clientId', $user->id)
                 ->with('lawyer')
+                ->where('status', '!=', 'cancelled')
+                ->where('startTime', '>=', now())
                 ->orderBy('startTime', 'desc')
                 ->paginate(10);
         } elseif ($user->isClerk()) {
             $appointments = Appointments::with(['lawyer', 'client'])
+                ->where('status', '!=', 'cancelled')
+                ->where('startTime', '>=', now())
                 ->orderBy('startTime', 'desc')
                 ->paginate(10);
         } else {
@@ -136,14 +142,18 @@ class AppointmentController extends Controller
 
             DB::commit();
 
-            // $lawyers = User::lawyers()->get();
-            // $clients = User::clients()->get();
-
             $lawyer = User::find($appointment->lawyerId);
             $client = User::find($appointment->clientId);
+            $clerks = User::whereRole('clerk')->get();
 
+            if ($lawyer && $client) {
+                // Send the notification
+                Notification::send([$lawyer, $client], new updatedAppt($appointment));
 
-            Notification::send([$lawyer, $client], new newAppointment($appointment));
+                foreach ($clerks as $clerk) {
+                    Notification::send($clerk, new newAppointment($appointment));
+                }
+            }
 
             if ($request->wantsJson()) {
                 return response()->json([
@@ -275,7 +285,6 @@ class AppointmentController extends Controller
                     $clientId
                 );
 
-
                 // determine if time slot changed
                 $newSlot = null;
                 if (
@@ -305,16 +314,8 @@ class AppointmentController extends Controller
                             'startTime' => ['This time slot is already booked']
                         ]);
                     }
-
-                    // $appointment->startTime = $newSlot->startTime;
-                    // $appointment->endTime = $newSlot->endTime;
                     $newSlot->update(['status' => 'booked']);
                 }
-
-                // $clientId = $currentUser->isClient() ? $currentUser->id
-                //     :($validatedData['clientId']);
-
-
 
                 $appointmentData = [
                     'lawyerId' => isset($validatedData['lawyerId']) ? $validatedData['lawyerId'] : $appointment->lawyerId,
@@ -334,16 +335,22 @@ class AppointmentController extends Controller
 
                 Db::commit();
 
-                $client = User::find($appointment->clientId);
-                $lawyer = User::find($appointment->lawyerId);
+                $client = User::find($appt->clientId);
+                $lawyer = User::find($appt->lawyerId);
+                $clerks = User::whereRole('clerk')->get();
+
                 if ($lawyer && $client) {
                     // Send the notification
-                    Notification::send([$lawyer, $client], new updatedAppt($appointment));
+                    Notification::send([$lawyer, $client], new updatedAppt($appt));
+
+                    foreach ($clerks as $clerk) {
+                        Notification::send($clerk, new updatedAppt($appt));
+                    }
                 } else {
                     Log::error('Lawyer or Client not found for appointment ID ' . $appointment->id);
                 }
 
-                if ($request->wantsJson()){
+                if ($request->wantsJson()) {
                     return response()->json([
                         'success' => true,
                         'message' => 'Appointment updated successfully',
@@ -391,12 +398,16 @@ class AppointmentController extends Controller
 
             DB::commit();
 
-            $lawyer = User::find($appointment->lawyerId);
-            $client = User::find($appointment->clientId);
+            $lawyer = User::find($cancelled->lawyerId);
+            $client = User::find($cancelled->clientId);
+            $clerks = User::whereRole('clerk')->get();
 
             if ($lawyer && $client) {
                 // Send the notification
-                Notification::send([$lawyer, $client], new updatedAppt($appointment));
+                Notification::send([$lawyer, $client], new updatedAppt($cancelled));
+                foreach ($clerks as $clerk) {
+                    Notification::send($clerk, new updatedAppt($appointment));
+                }
             } else {
                 Log::error('Lawyer or Client not found for appointment ID ' . $appointment->id);
             }

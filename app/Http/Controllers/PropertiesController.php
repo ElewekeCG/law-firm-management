@@ -71,7 +71,8 @@ class PropertiesController extends Controller
 
             properties::create($validatedData);
 
-            return redirect()->back()->with('message', 'Property added successfully');
+            return redirect()->route('properties.view')
+                ->with('message', 'Property added successfully');
         }
     }
 }

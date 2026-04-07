@@ -32,27 +32,41 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Lawyer</label>
-                                        <select name="lawyerId" id="lawyer_select" class="form-control" required>
-                                            @foreach ($lawyers as $lawyer)
-                                                <option value="{{ $lawyer->id }}"
-                                                    {{ $lawyer->id == $appt->lawyerId ? 'selected' : '' }}>
-                                                    {{ $lawyer->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        @if (auth()->user()->role === 'lawyer')
+                                            <select name="lawyerId" id="lawyer_select" class="form-control" required>
+                                                <option value="{{ auth()->user()->id }}">{{ auth()->user()->name }}</option>
+                                            </select>
+                                        @else
+                                            <select name="lawyerId" id="lawyer_select" class="form-control" required>
+                                                @foreach ($lawyers as $lawyer)
+                                                    <option value="{{ $lawyer->id }}"
+                                                        {{ $lawyer->id == $appt->lawyerId ? 'selected' : '' }}>
+                                                        {{ $lawyer->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        @endif
+
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6" id="client-container" style="display:none;">
-                                    <div class="form-group"><label>Client</label><select name="clientId" id="client_select"
-                                            class="form-control">
-                                            @foreach ($clients as $client)
-                                                <option value="{{ $client->id }}"
-                                                    {{ $client->id == $appt->client_id ? 'selected' : '' }}>
-                                                    {{ $client->name }} </option>
-                                            @endforeach
-                                        </select>
+                                    <div class="form-group">
+                                        <label>Client</label>
+                                        @if (auth()->user()->role === 'client')
+                                            <select name="clientId" id="client_select" class="form-control">
+                                                <option value="{{ auth()->user()->id }}">{{ auth()->user()->name }}</option>
+                                            </select>
+                                        @else
+                                            <select name="clientId" id="client_select" class="form-control">
+                                                @foreach ($clients as $client)
+                                                    <option value="{{ $client->id }}"
+                                                        {{ $client->id == $appt->client_id ? 'selected' : '' }}>
+                                                        {{ $client->name }} </option>
+                                                @endforeach
+                                            </select>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -83,7 +97,8 @@
                                             class="form-control" value="{{ old('title', $appt->title) }}"></div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class="form-group"><label>Status</label><select name="status"
+                                    <div class="form-group"><label>Status</label>
+                                        <select name="status"
                                             class="form-control" id="status" required>
                                             <option value="scheduled"
                                                 {{ $appt->status == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
@@ -92,10 +107,11 @@
                                             <option value="completed"
                                                 {{ $appt->status == 'completed' ? 'selected' : '' }}>Completed
                                             </option>
-                                            <option value="cancelled"
-                                                {{ $appt->status == 'cancelled' ? 'selected' : '' }}>Cancelled
-                                            </option>
-                                        </select></div>
+                                                <option value="cancelled"
+                                                    {{ $appt->status == 'cancelled' ? 'selected' : '' }}>Cancelled
+                                                </option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -105,16 +121,22 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group"><label>Appointment Type</label><select name="type"
+                                    <div class="form-group"><label>Appointment Type</label>
+                                        <select name="type"
                                             class="form-control" id="appt-type" required>
                                             <option value="consultation"
-                                                {{ $appt->type == 'consultation' ? 'selected' : '' }}>Consultation</option>
-                                            <option value="case_meeting"
-                                                {{ $appt->type == 'case_meeting' ? 'selected' : '' }}>Case Meeting</option>
-                                            <option value="court_appearance"
-                                                {{ $appt->type == 'court_appearance' ? 'selected' : '' }}>Court Appearance
+                                                {{ $appt->type == 'consultation' ? 'selected' : '' }}>Consultation
                                             </option>
-                                        </select></div>
+                                            <option value="case_meeting"
+                                                {{ $appt->type == 'case_meeting' ? 'selected' : '' }}>Case Meeting
+                                            </option>
+                                            @if (auth()->user()->role !== 'client')
+                                                <option value="court_appearance"
+                                                    {{ $appt->type == 'court_appearance' ? 'selected' : '' }}>Court Appearance
+                                                </option>
+                                            @endif
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">

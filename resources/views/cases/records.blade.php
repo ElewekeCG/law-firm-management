@@ -19,9 +19,11 @@
             <h3 class="m-0 font-weight-bold text-primary">
                 Case Records
             </h3>
-            <a href="{{ route('cases.addRecord') }}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>New Record
-            </a>
+            @if (auth()->user()->role !== 'client')
+                <a href="{{ route('cases.addRecord') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>New Record
+                </a>
+            @endif
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -48,7 +50,7 @@
                         <div class="col-sm-12 col-md-6">
                             <div id="dataTable_filter" class="dataTables_filter">
                                 <form action="{{ route('cases.viewRecord') }}" method="GET" class=" mb-4">
-                                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="form-control mr-2">
+                                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by case title..." class="form-control mr-2">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </form>
                             </div>
@@ -70,7 +72,9 @@
                                             <th>Required Document</th>
                                             <th>Due Date</th>
                                             <th>Status</th>
-                                            <th>Action</th>
+                                            @if (auth()->user()->role !== 'client')
+                                                <th>Action</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -80,7 +84,9 @@
                                             <th>Required Document</th>
                                             <th>Due Date</th>
                                             <th>Status</th>
-                                            <th>Action</th>
+                                            @if (auth()->user()->role !== 'client')
+                                                <th>Action</th>
+                                            @endif
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -91,11 +97,13 @@
                                                 <td>{{ $record->requiredDoc ?? 'None' }}</td>
                                                 <td>{{ $record->dueDate ?? 'N/A' }}</td>
                                                 <td>{{ $record->docStatus }}</td>
-                                                <td>
-                                                    <a class="me-3" href="{{ url('cases/editRecord/' . $record->id) }}">
-                                                        <img src="{{ url('assets/img/edit.svg') }}" alt="Edit">
-                                                    </a>
-                                                </td>
+                                                @if (auth()->user()->role !== 'client')
+                                                    <td>
+                                                        <a class="me-3" href="{{ url('cases/editRecord/' . $record->id) }}">
+                                                            <img src="{{ url('assets/img/edit.svg') }}" alt="Edit">
+                                                        </a>
+                                                    </td>
+                                                @endif
                                             </tr>
                                         @endforeach
                                     </tbody>

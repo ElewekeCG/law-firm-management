@@ -22,6 +22,8 @@ class Dashboard extends Controller
                 $query->where('clientId', $user->id);
             } elseif ($user->isLawyer()) {
                 $query->where('lawyerId', $user->id);
+            } elseif ($user->isClerk()) {
+                $query;
             }
         })
         ->where('startTime', '>', $now)
@@ -34,6 +36,8 @@ class Dashboard extends Controller
                 $query->where('clientId', $user->id);
             } elseif ($user->isLawyer()) {
                 $query->where('lawyerId', $user->id);
+            } elseif ($user->isClerk()) {
+                $query;
             }
         })
         ->where('startTime', '>', $now)
@@ -52,13 +56,12 @@ class Dashboard extends Controller
         ->where('docStatus', '=', 'pending')
         ->count();
 
-        return view('Dashboard', compact([
-            'user' => 'user',
-            'newAppointments' => 'newAppointments',
-            'upcomingCases' => 'upcomingCases',
-            'pendingDocs' => 'pendingDocs',
-            'notifications' => 'notifications'
-        ]
+        return view('Dashboard', compact(
+            'user',
+            'newAppointments',
+            'upcomingCases',
+            'pendingDocs',
+            'notifications'        
         ));
     }
 
@@ -72,6 +75,8 @@ class Dashboard extends Controller
                     $query->where('clientId', $user->id);
                 } elseif ($user->isLawyer()) {
                     $query->where('lawyerId', $user->id);
+                } elseif ($user->isClerk()) {
+                    $query;
                 }
             })
             ->where('startTime', '>', $now)

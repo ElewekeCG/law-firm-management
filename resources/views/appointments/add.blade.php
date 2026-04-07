@@ -39,12 +39,18 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="lawyer_select">Lawyer</label>
-                                <select name="lawyerId" id="lawyer_select" class="form-control" required>
-                                    <option value="">Select Lawyer</option>
-                                    @foreach ($lawyers as $lawyer)
-                                        <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>
-                                    @endforeach
-                                </select>
+                                    @if (auth()->user()->role === 'lawyer')
+                                        <select name="lawyerId" id="lawyer_select" class="form-control" required>
+                                            <option value="{{ auth()->user()->id }}">{{ auth()->user()->name }}</option>
+                                        </select>
+                                    @else
+                                        <select name="lawyerId" id="lawyer_select" class="form-control" required>
+                                            <option value="">Select Lawyer</option>
+                                            @foreach ($lawyers as $lawyer)
+                                                <option value="{{ $lawyer->id }}">{{ $lawyer->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -74,7 +80,9 @@
                                     <option value="">Select Type</option>
                                     <option value="consultation">Consultation</option>
                                     <option value="case_meeting">Case Meeting</option>
-                                    <option value="court_appearance">Court Appearance</option>
+                                    @if (auth()->user()->role !== 'client')
+                                        <option value="court_appearance">Court Appearance</option>
+                                    @endif
                                 </select>
                             </div>
                         </div>
@@ -89,12 +97,18 @@
                         <div class="col-md-6" id="client-container" style="display:none;">
                             <div class="form-group">
                                 <label>Client</label>
-                                <select name="clientId" id="client_select" class="form-control">
-                                    <option value="">Select Client</option>
-                                    @foreach ($clients as $client)
-                                        <option value="{{ $client->id }}">{{ $client->name }}</option>
-                                    @endforeach
-                                </select>
+                                @if (auth()->user()->role === 'client')
+                                    <select name="clientId" id="client_select" class="form-control">
+                                        <option value="{{ auth()->user()->id }}">{{ auth()->user()->name }}</option>
+                                    </select>
+                                @else
+                                    <select name="clientId" id="client_select" class="form-control">
+                                        <option value="">Select Client</option>
+                                        @foreach ($clients as $client)
+                                            <option value="{{ $client->id }}">{{ $client->name }}</option>
+                                        @endforeach
+                                    </select>
+                                @endif
                             </div>
                         </div>
                         <div class="col-md-6" id="case-container" style="display:none;">

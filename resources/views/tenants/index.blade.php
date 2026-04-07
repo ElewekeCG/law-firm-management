@@ -92,7 +92,7 @@
                                                 <td>{{ $tenant->email }}</td>
                                                 <td>{{ $tenant->paymentType }}</td>
                                                 <td>{{ $tenant->accomType }}</td>
-                                                <td>${{ number_format($tenant->rentAmt, 2) }}</td>
+                                                <td>&#8358;{{ number_format($tenant->rentAmt, 2) }}</td>
                                                 <td>{{ $tenant->property->address }}</td>
                                                 <td>
                                                     <a class="me-3" href="{{ url('tenants/edit/' . $tenant->id) }}">

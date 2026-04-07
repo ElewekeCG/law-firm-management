@@ -22,7 +22,7 @@ class Transactions extends Model
 
     public function tenant()
     {
-        return $this->belongsTo(tenants::class, 'tenantId');
+        return $this->belongsTo(Tenants::class, 'tenantId');
     }
 
     public function client()
@@ -32,7 +32,7 @@ class Transactions extends Model
 
     public function property()
     {
-        return $this->belongsTo(properties::class, 'propertyId');
+        return $this->belongsTo(Properties::class, 'propertyId');
     }
 
 }

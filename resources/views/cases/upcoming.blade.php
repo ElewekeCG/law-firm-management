@@ -4,7 +4,7 @@
     <div class="bg-white shadow-md rounded-lg">
         <div class="card-header py-3">
             <h2 class="text-2xl font-semibold">
-                {{ $user->isLawyer() ? 'My Appointments' : 'Appointments' }}
+                Upcoming Cases
             </h2>
         </div>
         <div class="card-body">
@@ -46,16 +46,18 @@
                                                     <a class="me-3" href="{{ url('appointments/show/' . $appt->id) }}" title="View">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <a class="me-3" href="{{ url('appointments/edit/' . $appt->id) }}" title="Edit">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <form action="{{ url('appointments/cancel/' . $appt->id) }}" method="POST" style="display:inline;">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button type="submit" class="btn btn-link me-3 p-0" title="Cancel" style="border: none; background: none;">
-                                                            <i class="fas fa-times text-danger"></i>
-                                                        </button>
-                                                    </form>
+                                                    @if (auth()->user()->role !== 'client')
+                                                        <a class="me-3" href="{{ url('appointments/edit/' . $appt->id) }}" title="Edit">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <form action="{{ url('appointments/cancel/' . $appt->id) }}" method="POST" style="display:inline;">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <button type="submit" class="btn btn-link me-3 p-0" title="Cancel" style="border: none; background: none;">
+                                                                <i class="fas fa-times text-danger"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

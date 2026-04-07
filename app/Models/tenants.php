@@ -21,7 +21,12 @@ class Tenants extends Model
 
     public function property()
     {
-        return $this->belongsTo(properties::class, 'propertyId');
+        return $this->belongsTo(Properties::class, 'propertyId');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transactions::class, 'tenantId');
     }
 
     public function getFullNameAttribute()

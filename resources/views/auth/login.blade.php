@@ -19,7 +19,7 @@
                     <div class="text-center mb-4">
                         <h2 class="h4 text-gray-900">Login to Your Account</h2>
                     </div>
-                    <form method="POST" action="{{ route('login') }}" class="user">
+                    <form method="POST" action="{{ route('login.submit') }}" class="user">
                         @csrf
                         <!-- Email Field -->
                         <div class="form-floating mb-3">

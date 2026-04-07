@@ -85,17 +85,10 @@ class TenantsController extends Controller
             ]);
 
 
-            $tenant = tenants::create([
-                'firstName' => $validatedData['firstName'],
-                'lastName' => $validatedData['lastName'],
-                'email' =>$validatedData['email'],
-                'paymentType' =>$validatedData['paymentType'],
-                'accomType' =>$validatedData['accomType'],
-                'rentAmt' =>$validatedData['rentAmt'],
-                'propertyId' =>$validatedData['propertyId'],
-            ]);
+            tenants::create($validatedData);
 
-            return redirect()->back()->with('message', 'Tenant added successfully');
+            return redirect()->route('tenants.view')
+                ->with('message', 'Tenant added successfully');
         }
     }
 }

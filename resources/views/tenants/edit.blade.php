@@ -58,8 +58,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Payment Type</label>
-                                    <select name="paymentType" class="form-control select" id="clientSelect">
-                                        <option value="-1">Select Payment Type</option>
+                                    <select name="paymentType" class="form-control select">
                                         <option value="yearly">Yearly</option>
                                         <option value="monthly">Monthly</option>
                                     </select>

@@ -4,45 +4,49 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Cases;
 use App\Models\Proceedings;
+use App\Models\User;
+use App\Notifications\CourtRecordUpdated;
+use App\Notifications\NewCourtRecord;
+use Notification;
 
 use Illuminate\Http\Request;
 
 class ProceedingsController extends Controller
 {
     public function index(Request $request)
-{
-    $user = auth()->user();
+    {
+        $user = auth()->user();
 
-    // Start with a base query that includes the case relationship
-    $records = Proceedings::with('case');
+        // Start with a base query that includes the case relationship
+        $records = Proceedings::with('case');
 
-    if ($user->role === 'lawyer' || $user->role === 'clerk') {
-        // Lawyers and clerks can view all records
-        $records;
-    } elseif ($user->role === 'client') {
-        // Clients can only view records for their cases
-        $records->whereHas('case', function($query) use ($user) {
-            $query->where('clientId', $user->id);
-        });
-    } else {
-        abort(403, 'Unauthorized');
-    }
+        if ($user->role === 'lawyer' || $user->role === 'clerk') {
+            // Lawyers and clerks can view all records
+            $records;
+        } elseif ($user->role === 'client') {
+            // Clients can only view records for their cases
+            $records->whereHas('case', function ($query) use ($user) {
+                $query->where('clientId', $user->id);
+            });
+        } else {
+            abort(403, 'Unauthorized');
+        }
 
-    // Search and pagination
-    $perPage = $request->input('dataTable_length', 10);
-    $searchTerm = $request->input('search', '');
+        // Search and pagination
+        $perPage = $request->input('dataTable_length', 10);
+        $searchTerm = $request->input('search', '');
 
-    $recordsList = $records->when($searchTerm, function($query) use ($searchTerm) {
-            return $query->where(function($q) use ($searchTerm) {
-                $q->WhereHas('case', function($caseQuery) use ($searchTerm) {
-                      $caseQuery->where('title', 'like', '%' . $searchTerm . '%');
-                  });
+        $recordsList = $records->when($searchTerm, function ($query) use ($searchTerm) {
+            return $query->where(function ($q) use ($searchTerm) {
+                $q->WhereHas('case', function ($caseQuery) use ($searchTerm) {
+                    $caseQuery->where('title', 'like', '%' . $searchTerm . '%');
+                });
             });
         })
-        ->paginate($perPage);
+            ->paginate($perPage);
 
-    return view('cases.records', compact('recordsList'));
-}
+        return view('cases.records', compact('recordsList'));
+    }
 
     public function showAdd()
     {
@@ -77,7 +81,19 @@ class ProceedingsController extends Controller
             // update the required field
             $pro->update($validatedData);
 
-            // Redirect to the view cases page
+            $client = User::find($pro->case->clientId);
+            if ($client) {
+                Notification::send($client,new CourtRecordUpdated($pro));
+            }
+
+            // notify lawyers and clerks
+            $lawyers = User::lawyers()->get();
+            $clerk = User::clerk()->get();
+
+            Notification::send($lawyers, new NewCourtRecord($pro));
+            Notification::send($clerk, new NewCourtRecord($pro));
+
+            // Redirect to the view records page
             return redirect()->route('cases.viewRecord')
                 ->with('message', 'Record updated successfully');
         }
@@ -94,7 +110,19 @@ class ProceedingsController extends Controller
                 'docStatus' => 'pending'
             ]);
 
-            Proceedings::create($validatedData);
+            $pro = Proceedings::create($validatedData);
+
+            $client = User::find($pro->case->clientId);
+            if ($client) {
+                Notification::send($client,new NewCourtRecord($pro));
+            }
+
+            // notify lawyers and clerks
+            $lawyers = User::lawyers()->get();
+            $clerk = User::clerk()->get();
+
+            Notification::send($lawyers, new NewCourtRecord($pro));
+            Notification::send($clerk, new NewCourtRecord($pro));
 
             return redirect()->route('cases.viewRecord')->with('message', 'Record added successfully');
         }
