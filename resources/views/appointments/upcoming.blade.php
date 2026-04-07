@@ -13,30 +13,11 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
                             <div class="dataTables_length" id="dataTable_length">
-                                {{-- <label>Show
-                                    <select id="dataTableLength" name="dataTable_length"
-                                        class="custom-select custom-select-sm form-control form-control-sm">
-                                        <option value="10" {{ request('dataTable_length') == 10 ? 'selected' : '' }}>10
-                                        </option>
-                                        <option value="25" {{ request('dataTable_length') == 25 ? 'selected' : '' }}>25
-                                        </option>
-                                        <option value="50" {{ request('dataTable_length') == 50 ? 'selected' : '' }}>50
-                                        </option>
-                                        <option value="100" {{ request('dataTable_length') == 100 ? 'selected' : '' }}>
-                                            100</option>
-                                    </select>
-                                    entries
-                                </label> --}}
+
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-6">
-                            {{-- <div id="dataTable_filter" class="dataTables_filter">
-                                <form action="{{ route('appointments.upcoming') }}" method="GET" class=" mb-4">
-                                    <input type="text" name="search" value="{{ request('search') }}"
-                                        placeholder="Search..." class="form-control mr-2">
-                                    <button type="submit" class="btn btn-primary">Search</button>
-                                </form>
-                            </div> --}}
+
                         </div>
                     </div>
 
@@ -91,16 +72,18 @@
                                                     <a class="me-3" href="{{ url('appointments/show/' . $appt->id) }}" title="View">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
-                                                    <a class="me-3" href="{{ url('appointments/edit/' . $appt->id) }}" title="Edit">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <form action="{{ url('appointments/cancel/' . $appt->id) }}" method="POST" style="display:inline;">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button type="submit" class="btn btn-link me-3 p-0" title="Cancel" style="border: none; background: none;">
-                                                            <i class="fas fa-times text-danger"></i>
-                                                        </button>
-                                                    </form>
+                                                    @if (auth()->user()->role !== 'client')
+                                                        <a class="me-3" href="{{ url('appointments/edit/' . $appt->id) }}" title="Edit">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <form action="{{ url('appointments/cancel/' . $appt->id) }}" method="POST" style="display:inline;">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <button type="submit" class="btn btn-link me-3 p-0" title="Cancel" style="border: none; background: none;">
+                                                                <i class="fas fa-times text-danger"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

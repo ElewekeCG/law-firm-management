@@ -11,12 +11,6 @@ class UserController extends Controller
         $lawyers = User::lawyers()->get();
         return view('lawyers.index', compact('lawyers'));
     }
-
-    public function listClients()
-    {
-        $clients = User::clients()->get();
-        return view('clients.index', compact('lawyers'));
-    }
 }
 
 

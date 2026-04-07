@@ -77,15 +77,17 @@ class CaseController extends Controller
             // update the required field
             $case->update($validatedData);
 
-            // notify client associated with case
+            // notify client associated with case and staff
             $client = User::find($case->clientId);
-            if ($client) {
-                $client->notify(new CaseUpdated($case));
-            }
-
-            // notify lawyers
             $lawyers = User::lawyers()->get();
+            $clerks = User::whereRole('clerk')->get();
+
+            Notification::send($client,new CaseUpdated($case));
+            foreach ($clerks as $clerk) {
+                Notification::send($clerk, new CaseUpdated($case));
+            }
             Notification::send($lawyers, new CaseUpdated($case));
+
 
             // Redirect to the view cases page
             return redirect()->route('cases.allCases')
@@ -111,7 +113,8 @@ class CaseController extends Controller
 
             Cases::create($validatedData);
 
-            return redirect()->back()->with('message', 'Case added successfully');
+            return redirect()->route('cases.allCases')
+                ->with('message', 'Case added successfully');
         }
     }
 }

@@ -23,6 +23,6 @@ class Properties extends Model
 
     public function transactions()
     {
-        return $this->hasMany(transactions::class);
+        return $this->hasMany(Transactions::class);
     }
 }

@@ -40,7 +40,12 @@
                                     {{ $notification->created_at->diffForHumans() }}
                                 </div>
                                 <span class="font-weight-bold">
-                                    {{ $notification->data['message'] }}
+                                    @if(is_array($notification->data) && isset($notification->data['message']))
+                                        {{ $notification->data['message'] }}
+                                    @else
+                                        Notification received
+                                    @endif
+                                    {{-- {{ $notification->data['message'] }} --}}
                                 </span>
                             </div>
                         </button>
@@ -69,7 +74,7 @@
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="#">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Profile
+                    Role: {{ Auth::user()->role }}
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ route('logout') }}" data-toggle="modal" data-target="#logoutModal">

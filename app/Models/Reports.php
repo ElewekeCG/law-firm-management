@@ -25,7 +25,7 @@ class Reports extends Model
 
     public function property()
     {
-        return $this->belongsTo(properties::class);
+        return $this->belongsTo(Properties::class);
     }
 
     public function generatedBy()

@@ -48,7 +48,7 @@
                         <div class="col-sm-12 col-md-6">
                             <div id="dataTable_filter" class="dataTables_filter">
                                 <form action="{{ route('properties.view') }}" method="GET" class=" mb-4">
-                                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="form-control mr-2">
+                                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by address..." class="form-control mr-2">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </form>
                             </div>
@@ -86,7 +86,7 @@
                                             <tr>
                                                 <td>{{ $props->client->name }}</td>
                                                 <td>{{ $props->address }}</td>
-                                                <td>NGN{{ number_format($props->rate, 0) }}</td>
+                                                <td>&#8358;{{ number_format($props->rate, 0) }}</td>
                                                 <td>{{ $props->percentage }}%</td>
                                                 <td>
                                                     <a class="me-3" href="{{ url('properties/edit/' . $props->id) }}">

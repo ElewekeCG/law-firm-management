@@ -27,8 +27,7 @@ class Trans extends Controller
                     ->orWhere('lastName', 'like', '%' . $searchTerm . '%');
                 })
                 ->orWhereHas('client', function ($q) use ($searchTerm) {
-                    $q->where('firstName', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('lastName', 'like', '%' . $searchTerm . '%');
+                    $q->where('name', 'like', '%' . $searchTerm . '%');
                 })
                 ->orWhereHas('property', function ($q) use ($searchTerm) {
                     $q->where('address', 'like', '%' . $searchTerm . '%');
@@ -129,7 +128,8 @@ class Trans extends Controller
 
             Transactions::create($data);
 
-            return redirect()->back()->with('message', 'Transaction added successfully');
+            return redirect()->route('transactions.view')
+                ->with('message', 'Transaction added successfully');
         }
     }
 }

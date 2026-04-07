@@ -19,6 +19,6 @@ class Proceedings extends Model
 
     public function case()
     {
-        return $this->belongsTo(cases::class, 'caseId');
+        return $this->belongsTo(Cases::class, 'caseId');
     }
 }

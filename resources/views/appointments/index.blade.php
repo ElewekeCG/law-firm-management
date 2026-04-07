@@ -46,7 +46,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-6">
+                        {{-- <div class="col-sm-12 col-md-6">
                             <div id="dataTable_filter" class="dataTables_filter">
                                 <form action="{{ route('appointments.view') }}" method="GET" class=" mb-4">
                                     <input type="text" name="search" value="{{ request('search') }}"
@@ -54,7 +54,7 @@
                                     <button type="submit" class="btn btn-primary">Search</button>
                                 </form>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <!-- Keeps query parameters in pagination links -->

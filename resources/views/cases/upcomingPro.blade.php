@@ -22,6 +22,7 @@
                                             <th>Due Date</th>
                                             <th>Case Title</th>
                                             <th>Document</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -29,6 +30,7 @@
                                             <th>Due Date</th>
                                             <th>Case Title</th>
                                             <th>Document</th>
+                                            <th>Action</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>

@@ -14,22 +14,24 @@
                 <!-- Appointment Details Section -->
                 <div class="card-body">
                     @if ($singleAppointment)
-                        <!-- Action Buttons -->
-                        <div class="d-flex mb-4">
-                            <a href="{{ url('appointments/edit/' . $singleAppointment->id) }}"
-                                class="btn btn-primary btn-sm me-2">
-                                Edit
-                            </a>
-                            <form action="{{ url('appointments/cancel/' . $singleAppointment->id) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                @method('PUT')
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    Cancel
-                                </button>
-                            </form>
-                        </div>
-
+                        @if (auth()->user()->role !== 'client')
+                            <!-- Action Buttons -->
+                            <div class="d-flex mb-4">
+                                <a href="{{ url('appointments/edit/' . $singleAppointment->id) }}"
+                                    class="btn btn-primary btn-sm me-2">
+                                    Edit
+                                </a>
+                                <form action="{{ url('appointments/cancel/' . $singleAppointment->id) }}" method="POST"
+                                    style="display:inline;">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        Cancel
+                                    </button>
+                                </form>
+                            </div>
+                        @endif
+                        
                         <!-- Appointment Info -->
                         <div class="row">
                             <!-- Left Column -->

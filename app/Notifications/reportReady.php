@@ -2,27 +2,25 @@
 
 namespace App\Notifications;
 
+use App\Models\Reports;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\DatabaseMessage;
-use App\Models\Appointments;
 
-class cancelledAppt extends Notification
+class reportReady extends Notification
 {
     use Queueable;
+    protected $report;
 
-    protected $appt;
-    // protected $notificationType;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Appointments $appt)
+    public function __construct(Reports $report)
     {
-        $this->appt = $appt;
+        $this->report = $report;
     }
 
     /**
@@ -56,22 +54,22 @@ class cancelledAppt extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+
+     public function toArray($notifiable)
+     {
+         return [
+             //
+         ];
+     }
+
+     public function toDatabase($notifiable)
     {
         return [
-            //
-        ];
-    }
-
-    public function toDatabase($notifiable)
-    {
-        return [
-            'apptId' => $this->appt->id,
-            'title' => $this->appt->title,
-            'url' => route('appointments.show', $this->appt->id),
-            'icon' => 'fas fa-calendar-days',
-            'message' => "Appointment: {$this->appt->title} canceled",
-
+            'reportId' => $this->report->id,
+            'message' => "Report for your property is ready to view",
+            'type' => 'Report ready',
+            'url' => route('reports.view', $this->report->id),
+            'icon' => 'fas fa-briefcase'
         ];
     }
 }

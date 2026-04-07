@@ -50,7 +50,6 @@
                             <div class="form-group">
                                 <label>Payment Type</label>
                                 <select name="type" class="form-control select" id="type">
-                                    <option value="-1">Select Type</option>
                                     <option value="credit" {{ old('type') == 'credit' ? 'selected' : '' }}>Credit</option>
                                     <option value="debit" {{ old('type') == 'debit' ? 'selected' : '' }}>Debit</option>
                                 </select>
@@ -60,7 +59,6 @@
                             <div class="form-group">
                                 <label>Sub Type</label>
                                 <select name="subType" class="form-control select" id="subType">
-                                    <option value="-1">Select SubType</option>
                                     <option value="legalFee" {{ old('subType') == 'legalFee' ? 'selected' : '' }}>Legal Fee</option>
                                     <option value="rent" {{ old('subType') == 'rent' ? 'selected' : '' }}>Rent</option>
                                 </select>
