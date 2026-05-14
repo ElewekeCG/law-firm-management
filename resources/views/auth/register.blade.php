@@ -1,85 +1,173 @@
 @extends('layout.default_layout')
 
 @section('content')
-<div class="container vh-100 d-flex align-items-center justify-content-center">
-    <!-- Registration Card -->
-    <div class="card shadow-lg border-0 rounded-lg w-100" style="max-width: 850px;">
-        <div class="row g-0">
-            <!-- Sidebar for Branding -->
-            <div class="col-lg-5 d-none d-lg-flex align-items-center justify-content-center bg-primary text-white p-4">
-                <div class="text-center">
-                    <h3 class="h3 mb-4">Law Hub</h3>
-                    <img src="{{ url('assets/img/Justice_law_firm_logo-removebg-preview.png') }}" alt="law" style="max-width: 100%; height: auto; width: 150px;">
-                    {{-- <p class="lead">Streamline appointments, cases, and client management.</p> --}}
-                    {{-- <i class="fas fa-gavel fa-3x"></i> --}}
-                </div>
-            </div>
-            <!-- Registration Form -->
-            <div class="col-lg-7">
-                <div class="card-body p-4">
-                    <div class="text-center mb-4">
-                        <h2 class="h4 text-gray-900">Create Your Account</h2>
-                        <p class="text-muted">Join us to manage your cases efficiently.</p>
-                    </div>
-                    <form class="user" method="POST" action="{{ route('register') }}">
-                        @csrf
-                        <!-- Full Name and Email -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input name="name" type="text" class="form-control" id="name" placeholder="Full Name" required>
-                                    {{-- <label for="name">Full Name</label> --}}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input name="email" type="email" class="form-control" id="email" placeholder="Email Address" required>
-                                    {{-- <label for="email">Email Address</label> --}}
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Password and Confirm Password -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input name="password" type="password" class="form-control" id="password" placeholder="Password" required>
-                                    {{-- <label for="password">Password</label> --}}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input name="password_confirmation" type="password" class="form-control" id="password_confirmation" placeholder="Confirm Password" required>
-                                    {{-- <label for="password_confirmation">Confirm Password</label> --}}
-                                </div>
-                            </div>
-                        </div>
+<style>
+    :root {
+        --primary: #3D7EF5;
+    }
 
-                        <!-- User Role -->
-                        <div class="mb-3 d-flex">
-                            <label class="form-label" style="padding: 0 1rem;">I am a:</label>
-                            <div class="form-check" style="padding: 0 1rem;">
-                                <input class="form-check-input" type="radio" name="role" id="roleLawyer" value="lawyer" required>
-                                <label class="form-check-label" for="roleLawyer">Lawyer</label>
-                            </div>
-                            <div class="form-check" style="padding: 0 1rem;">
-                                <input class="form-check-input" type="radio" name="role" id="roleClient" value="client">
-                                <label class="form-check-label" for="roleClient">Client</label>
-                            </div>
-                            <div class="form-check" >
-                                <input class="form-check-input" type="radio" name="role" id="roleClerk" value="clerk">
-                                <label class="form-check-label" for="roleClerk">Clerk</label>
-                            </div>
-                        </div>
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 40%, #f4f7ff 100%);
+    }
 
-                        <!-- Submit Button -->
-                        <div class="col-md-6">
-                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    .btn-primary {
+        background-color: var(--primary);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #2563c7;
+    }
+
+    .form-control {
+        border-radius: 0.6rem;
+    }
+
+    .role-btn.active {
+        background-color: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+    }
+</style>
+
+<div class="container min-vh-100 d-flex flex-column justify-content-center">
+
+    {{-- Card --}}
+    <div class="card shadow-lg p-4 p-md-5 mx-auto w-100" style="max-width: 520px; border-radius: 1rem;">
+        <div class="text-center mb-3">
+            <a href="{{ url('/') }}">
+                <img src="{{ asset('assets/img/law-firm-logo.svg') }}"
+                    alt="Law Pilot Logo"
+                    class="img-fluid"
+                    style="max-width: 160px;">
+            </a>
         </div>
+        <h3 class="text-center fw-bold mb-1">Create Your Account</h3>
+        <p class="text-muted text-center mb-4"></p>
+
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
+
+            <div class="row g-3">
+
+                {{-- Full Name --}}
+                <div class="col-sm-6">
+                    <label class="form-label small fw-semibold">Full Name</label>
+                    <div class="input-group">
+                        <input type="text"
+                               name="name"
+                               class="form-control @error('name') is-invalid @enderror"
+                               placeholder="John Doe"
+                               value="{{ old('name') }}"
+                               required>
+                    </div>
+                    @error('name')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- Email --}}
+                <div class="col-sm-6">
+                    <label class="form-label small fw-semibold">Email Address</label>
+                    <div class="input-group">
+                        <input type="email"
+                               name="email"
+                               class="form-control @error('email') is-invalid @enderror"
+                               placeholder="john@lawfirm.com"
+                               value="{{ old('email') }}"
+                               required>
+                    </div>
+                    @error('email')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- Password --}}
+                <div class="col-sm-6">
+                    <label class="form-label small fw-semibold">Password</label>
+                    <div class="input-group">
+                        <input type="password"
+                               name="password"
+                               class="form-control @error('password') is-invalid @enderror"
+                               placeholder="Min. 8 characters"
+                               required>
+                    </div>
+                    @error('password')
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- Confirm Password --}}
+                <div class="col-sm-6">
+                    <label class="form-label small fw-semibold">Confirm Password</label>
+                    <div class="input-group">
+                        <input type="password"
+                               name="password_confirmation"
+                               class="form-control"
+                               placeholder="Repeat password"
+                               required>
+                    </div>
+                </div>
+
+                {{-- Role --}}
+               <div class="col-12 mt-2">
+                    <hr>
+                    <label class="form-label small fw-semibold mb-2">I am a:</label>
+
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-primary w-100 role-btn active" data-value="lawyer">
+                            <i class="bi bi-briefcase me-1"></i> Lawyer
+                        </button>
+
+                        <button type="button" class="btn btn-outline-primary w-100 role-btn" data-value="client">
+                            <i class="bi bi-person me-1"></i> Client
+                        </button>
+
+                        <button type="button" class="btn btn-outline-primary w-100 role-btn" data-value="clerk">
+                            <i class="bi bi-file-earmark-text me-1"></i> Clerk
+                        </button>
+                    </div>
+
+                    {{-- Hidden input for form submission --}}
+                    <input type="hidden" name="role" id="roleInput" value="lawyer">
+
+                </div>
+
+                {{-- Submit --}}
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                        Create Account
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+        <p class="text-center text-muted small mt-3">
+            Already have an account?
+            <a href="{{ route('login') }}" class="fw-semibold text-decoration-none">Log in</a>
+        </p>
+
     </div>
 </div>
+
+<script>
+    const buttons = document.querySelectorAll('.role-btn');
+    const input = document.getElementById('roleInput');
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // remove active from all
+            buttons.forEach(b => b.classList.remove('active'));
+
+            // add active to clicked
+            btn.classList.add('active');
+
+            // update hidden input
+            input.value = btn.getAttribute('data-value');
+        });
+    });
+</script>
 @endsection

@@ -3,6 +3,7 @@
 use App\Http\Controllers\SpeechController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CalendarController;
 
 /*
@@ -15,6 +16,10 @@ use App\Http\Controllers\CalendarController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/', [HomeController::class, 'showLandingPage'])
+            ->middleware('guest')
+            ->name('home');
 
 Route::group(['prefix' => 'dashboard', 'middleware' => 'auth'], function () {
     Route::get('/', [Dashboard::class, 'showDashboard'])->name('dashboard');

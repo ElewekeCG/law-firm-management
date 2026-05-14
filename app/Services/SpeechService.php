@@ -6,10 +6,11 @@ use Google\Cloud\Speech\V1\SpeechClient;
 use Google\Cloud\Speech\V1\RecognitionConfig;
 use Google\Cloud\Speech\V1\RecognitionAudio;
 use Google\Cloud\Core\Exception\GoogleException;
+use Illuminate\Log\Logger;
 
 class SpeechService
 {
-    private $speechClient;
+    private SpeechClient $speechClient;
 
     public function __construct()
     {
@@ -24,6 +25,11 @@ class SpeechService
     }
 
     public function transcribeAudio($audioFilePath, $languageCode = 'en-NG') {
+        // validate file exists and is readable
+        if (!file_exists($audioFilePath) || !is_readable($audioFilePath)) {
+            throw new \InvalidArgumentException('Audio file not found or unreadable: {$audioFilePath}');
+        }
+
         try {
             $audioContent = file_get_contents($audioFilePath);
 
@@ -42,27 +48,35 @@ class SpeechService
             // extract transcription results
             $transcription = '';
             foreach ($response->getResults() as $result) {
-                $transcription.=$result->getAlternatives()[0]->getTranscript();
+                $alternatives = $result->getAlternatives();
+                if (!empty($alternatives)) {
+                    $transcription .= $alternatives[0]->getTranscript();
+                }
             }
-            return $transcription;
+            return $this->processTranscript($transcription);
         } catch (GoogleException $e) {
             logger()->error('Transcription error:'. $e->getMessage());
+            throw $e;
+        } catch (\Exception $e) {
+            logger()->error('Unexpected transcription error: ' . $e->getMessage());
             throw $e;
         }
     }
 
     public function processTranscript($transcript)
     {
-        $cleanedTranscript = trim($transcript);
-        $cleanedTranscript = preg_replace('/\s+/', '', $cleanedTranscript);
+        // trim leading and trailing white spaces
+        $cleaned = trim($transcript);
+        // replace multiple spaces with a single space
+        $cleaned = preg_replace('/\s+/', ' ', $cleaned);
 
-        return $cleanedTranscript;
+        return $cleaned;
     }
 
     // clean up speech client when done
     public function __destruct()
     {
-        if($this->speechClient) {
+        if(isset($this->speechClient)) {
             $this->speechClient->close();
         }
     }

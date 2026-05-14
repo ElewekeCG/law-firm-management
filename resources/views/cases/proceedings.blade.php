@@ -63,12 +63,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <a id="startRecording" class="btn btn-primary">
+                                <button type="button" id="startRecording" class="btn btn-primary">Start Recording</button>
+                                <button type="button" id="stopRecording" class="btn btn-danger" disabled>Stop Recording</button>
+                                {{-- <a id="startRecording" class="btn btn-primary">
                                     Start Recording
                                 </a>
                                 <a id="stopRecording" class="btn btn-danger" disabled>
                                     Stop Recording
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -78,7 +80,6 @@
                 </form>
             </div>
         </div>
-    </div>
     </div>
 @endsection
 
@@ -109,7 +110,7 @@
                     // Create media recorder
                     mediaRecorder = new MediaRecorder(stream);
 
-                    // Reset audio chunks
+                    let partialChunks = [...audioChunks];
                     audioChunks = [];
 
                     // Collect audio data
@@ -147,10 +148,10 @@
                     // Update button states
                     startButton.disabled = true;
                     stopButton.disabled = false;
-                    transcriptionText.textContent = 'Recording...';
+                    transcriptionText.value = 'Recording...';
                 } catch (error) {
                     console.error('Error accessing microphone:', error);
-                    transcriptionText.textContent = 'Microphone access denied.';
+                    transcriptionText.value = 'Microphone access denied.';
                 }
             });
 
@@ -170,12 +171,15 @@
 
                 fetch('/speech/transcribe', {
                         method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
                         body: formData
                     })
                     .then(response => response.json())
                     .then(data => {
                         if (data.transcript) {
-                            transcriptionText.textContent = data.transcript;
+                            transcriptionText.value = data.transcript;
                             console.log('Partial transcription:', data.transcript);
                         }
                     })

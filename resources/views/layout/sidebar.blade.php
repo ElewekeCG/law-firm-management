@@ -2,11 +2,11 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - head -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
         <div class="sidebar-brand-icon">
             <i class="fa-solid fa-scale-balanced"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">LAW HUB</div>
+        <div class="sidebar-brand-text mx-3">LAW PILOT</div>
     </a>
 
     <!-- Divider -->

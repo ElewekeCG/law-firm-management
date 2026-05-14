@@ -16,8 +16,8 @@ class GenerateSlots extends Command
      * @var string
      */
     protected $signature = 'slots:generate
-    {date?}
-    {end_date?}';
+    {date? : Start date (defaults to today)}
+    {end_date? : End date (defaults to start date)}';
 
     /**
      * The console command description.
@@ -40,22 +40,47 @@ class GenerateSlots extends Command
         $endDate = $this->argument('end_date')
             ? Carbon::parse($this->argument('end_date'))->endOfDay()
             : $date->copy()->endOfDay();
+
+        // Validate date range
+        if ($date->gt($endDate)) {
+            $this->error('Start date cannot be after end date.');
+            return SymfonyCommand::FAILURE;
+        }
+
         $this->info("Generating slots from: {$date->toDateString()} to {$endDate->toDateString()}");
 
         $lawyers = User::lawyers()->get();
 
-        while ($date <= $endDate) {
+        if ($lawyers->isEmpty()) {
+            $this->warn('No lawyers found. Exiting.');
+            return SymfonyCommand::SUCCESS;
+        }
+
+        $current = $date->copy();
+
+        while ($current->lte($endDate)) {
+            // skip weekends
+            if ($current->isWeekend()) {
+                $this->line("Skipping weekend: {$current->toDateString()}");
+                $current->addDay();
+                continue;
+            }
+
             $this->info("processing slots for date: {$date->toDateString()}");
 
             foreach ($lawyers as $lawyer) {
-                $slots = Available_slots::generateSlots($lawyer->id, $date);
-                $this->info("Generated {$slots->count()} slots for {$lawyer->name}");
+                $slots = Available_slots::generateSlots($lawyer->id, $current->copy());
+
+                if ($slots->isEmpty()) {
+                    $this->warn("  No slots generated for {$lawyer->name} (slots may already exist)");
+                } else {
+                    $this->info("  Generated {$slots->count()} slots for {$lawyer->name}");
+                }
+
             }
-
-            // move to next day
-            $date->addDay();
+            $current->addDay();
         }
-
+        $this->info('slot generation complete');
         return SymfonyCommand::SUCCESS;
     }
 }
