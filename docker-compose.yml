@@ -1,0 +1,126 @@
+version: '3.8'
+
+services:
+
+  # ── Laravel App ──────────────────────────────────────────
+  app:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    container_name: lawpilot-app
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    environment:
+        APP_ENV: local
+        APP_KEY: ${APP_KEY}
+        DB_HOST: db
+        DB_PORT: 3306
+        DB_DATABASE: ${DB_DATABASE}
+        DB_USERNAME: ${DB_USERNAME}
+        DB_PASSWORD: ${DB_PASSWORD}
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
+        GOOGLE_APPLICATION_CREDENTIALS: /var/www/html/storage/credentials/service-account-credentials.json
+    volumes:
+      - ./storage/credentials:/var/www/html/storage/credentials:ro
+    depends_on:
+        db:
+            condition: service_healthy
+        redis:
+            condition: service_healthy
+    networks:
+        - lawpilot
+
+  # ── MySQL ─────────────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: lawpilot-db
+    restart: unless-stopped
+    ports:
+        - "3306:3306"
+    environment:
+        MYSQL_DATABASE: ${DB_DATABASE}
+        MYSQL_USER: ${DB_USERNAME}
+        MYSQL_PASSWORD: ${DB_PASSWORD}
+        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+        - db_data:/var/lib/mysql
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+        interval: 5s
+        timeout: 5s
+        retries: 10
+    networks:
+        - lawpilot
+
+  # ── Redis ─────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: lawpilot-redis
+    restart: unless-stopped
+    volumes:
+        - redis_data:/data
+    healthcheck:
+        test: ["CMD", "redis-cli", "ping"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+    networks:
+        - lawpilot
+
+  # ── Queue Worker ──────────────────────────────────────────
+  queue:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    container_name: lawpilot-queue
+    restart: unless-stopped
+    command: php artisan queue:work --sleep=3 --tries=3
+    environment:
+        APP_KEY: ${APP_KEY}
+        DB_HOST: db
+        DB_PORT: 3306
+        DB_DATABASE: ${DB_DATABASE}
+        DB_USERNAME: ${DB_USERNAME}
+        DB_PASSWORD: ${DB_PASSWORD}
+        REDIS_HOST: redis
+    depends_on:
+        db:
+            condition: service_healthy
+        redis:
+            condition: service_healthy
+    networks:
+        - lawpilot
+
+  # ── Scheduler ─────────────────────────────────────────────
+  scheduler:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    container_name: lawpilot-scheduler
+    restart: unless-stopped
+    command: php artisan schedule:work
+    environment:
+        APP_KEY: ${APP_KEY}
+        DB_HOST: db
+        DB_PORT: 3306
+        DB_DATABASE: ${DB_DATABASE}
+        DB_USERNAME: ${DB_USERNAME}
+        DB_PASSWORD: ${DB_PASSWORD}
+        REDIS_HOST: redis
+    depends_on:
+        db:
+            condition: service_healthy
+        redis:
+            condition: service_healthy
+    networks:
+        - lawpilot
+
+volumes:
+    db_data:
+    redis_data:
+
+networks:
+    lawpilot:
+        driver: bridge
